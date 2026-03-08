@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OVH Dual-Path Cluster UX</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 900px; }
+      fieldset { margin: 1rem 0; padding: 1rem; }
+      .hidden { display: none; }
+      .error { color: #b91c1c; font-weight: 600; }
+      .ok { color: #166534; font-weight: 600; }
+      label { display: block; margin: 0.5rem 0; }
+      input, select { min-width: 280px; }
+      code { background: #f3f4f6; padding: 0.1rem 0.3rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Issue #2 — OVH Dual Provisioning UX</h1>
+    <p>Choose one path: <strong>Hosted OVH MKS</strong> or <strong>OVH Nodes + RKE2/K3s</strong>.</p>
+
+    <label>
+      Provisioning path
+      <select id="pathSelect">
+        <option value="mks">Hosted OVH MKS</option>
+        <option value="nodes">OVH Nodes + RKE2/K3s</option>
+      </select>
+    </label>
+
+    <fieldset id="commonFields">
+      <legend>Common Required</legend>
+      <label>OVH Project ID <input id="projectId" placeholder="xxxx-xxxx" /></label>
+      <label>Region
+        <select id="region">
+          <option value="">-- Select region --</option>
+          <option>GRA</option>
+          <option>SBG</option>
+          <option>BHS</option>
+        </select>
+      </label>
+    </fieldset>
+
+    <fieldset id="mksFields">
+      <legend>Hosted OVH MKS Required</legend>
+      <label>Kubernetes Version
+        <select id="mksVersion">
+          <option value="">-- Select version --</option>
+          <option>1.30</option>
+          <option>1.31</option>
+        </select>
+      </label>
+      <label>Node Pool Flavor
+        <select id="mksFlavor">
+          <option value="">-- Select flavor --</option>
+          <option>b2-7</option>
+          <option>b2-15</option>
+        </select>
+      </label>
+    </fieldset>
+
+    <fieldset id="nodeFields" class="hidden">
+      <legend>OVH Nodes + RKE2/K3s Required</legend>
+      <label>Distro
+        <select id="distro">
+          <option value="">-- Select distro --</option>
+          <option>RKE2</option>
+          <option>K3s</option>
+        </select>
+      </label>
+      <label>Node Flavor
+        <select id="nodeFlavor">
+          <option value="">-- Select flavor --</option>
+          <option>b2-7</option>
+          <option>b2-15</option>
+          <option>c2-30</option>
+        </select>
+      </label>
+      <label>Image
+        <select id="image">
+          <option value="">-- Select image --</option>
+          <option>Ubuntu 22.04</option>
+          <option>Ubuntu 24.04</option>
+        </select>
+      </label>
+    </fieldset>
+
+    <button id="validateBtn" type="button">Validate form</button>
+    <p id="result"></p>
+
+    <h2>Fallback static options</h2>
+    <p>Current options are bundled statically in this page for sprint validation.</p>
+
+    <script>
+      const pathSelect = document.getElementById('pathSelect');
+      const mksFields = document.getElementById('mksFields');
+      const nodeFields = document.getElementById('nodeFields');
+      const result = document.getElementById('result');
+
+      function setPathVisibility() {
+        const isMks = pathSelect.value === 'mks';
+        mksFields.classList.toggle('hidden', !isMks);
+        nodeFields.classList.toggle('hidden', isMks);
+      }
+
+      function missing(id) {
+        return !document.getElementById(id).value.trim();
+      }
+
+      document.getElementById('validateBtn').addEventListener('click', () => {
+        const errors = [];
+        if (missing('projectId')) errors.push('OVH Project ID is required');
+        if (missing('region')) errors.push('Region is required');
+
+        if (pathSelect.value === 'mks') {
+          if (missing('mksVersion')) errors.push('MKS version is required');
+          if (missing('mksFlavor')) errors.push('MKS node pool flavor is required');
+        } else {
+          if (missing('distro')) errors.push('Distro is required');
+          if (missing('nodeFlavor')) errors.push('Node flavor is required');
+          if (missing('image')) errors.push('Image is required');
+        }
+
+        if (errors.length) {
+          result.className = 'error';
+          result.textContent = 'Validation failed: ' + errors.join('; ');
+          return;
+        }
+
+        result.className = 'ok';
+        result.textContent = 'Validation passed for path: ' + pathSelect.value;
+      });
+
+      pathSelect.addEventListener('change', setPathVisibility);
+      setPathVisibility();
+    </script>
+  </body>
+</html>

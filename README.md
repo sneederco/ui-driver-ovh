@@ -6,6 +6,10 @@ OVH node template UI companion for Rancher.
 
 See `docs/README.md` for the split-repo install flow using:
 
+Issue-linked docs:
+- `docs/ISSUE-2-WS4.md` — WS4 scope, command proof, and open evidence items.
+- `docs/ISSUE-4-HOSTED-MKS-FLOW.md` — hosted MKS create/delete/scale operator flow + hourly billing teardown/rollback checklist.
+
 - `sneederco/docker-machine-driver-ovh` (backend binary)
 - `sneederco/ui-driver-ovh` (Rancher UI companion)
 

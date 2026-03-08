@@ -263,6 +263,13 @@ If Rancher object is wedged and updates fail:
 
 ---
 
+## Hosted MKS SOP reference (Issue #4)
+
+For hosted lifecycle operations and teardown controls, use:
+
+- `docs/ISSUE-4-HOSTED-MKS-FLOW.md` (this repo, operator-facing)
+- `docker-machine-driver-ovh/docs/ISSUE-4-HOSTED-MKS-SOP.md` (backend/API runbook)
+
 ## 8) Consistency checks against current repos
 
 - Backend repo clone URL: `https://github.com/sneederco/docker-machine-driver-ovh.git`

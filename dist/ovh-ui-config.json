@@ -90,15 +90,15 @@
     {
       "name": "mksNodepoolFlavor",
       "type": "select",
-      "label": "Default Node Pool Flavor",
+      "label": "Default Node Pool SKU",
       "requiredWhen": {
         "provisioningMode": "hosted-mks"
       },
       "optionSource": {
         "type": "api",
-        "endpoint": "/v1/ovh/flavors?region={{mksRegion}}",
-        "labelKey": "name",
-        "valueKey": "id"
+        "endpoint": "/v1/ovh/mks/skus?region={{mksRegion}}",
+        "labelKey": "displayName",
+        "valueKey": "sku"
       },
       "fallbackOptions": [
         {
@@ -117,7 +117,7 @@
       "dependsOn": [
         "mksRegion"
       ],
-      "validationMessage": "Hosted MKS requires a node pool flavor."
+      "validationMessage": "Hosted MKS requires a node pool SKU."
     },
     {
       "name": "mksNodepoolDesiredNodes",

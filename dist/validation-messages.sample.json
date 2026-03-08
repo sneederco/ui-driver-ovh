@@ -1,10 +1,19 @@
 {
   "validationMessages": {
-    "region.required": "Region is required. Select a valid OVH region.",
+    "provisioningMode.required": "Choose Hosted MKS or Node provisioning before continuing.",
+    "mksClusterName.required": "Cluster name is required for hosted MKS.",
+    "mksClusterName.pattern": "Cluster name must contain only letters, numbers, and dashes.",
+    "mksClusterName.length": "Cluster name must be between 3 and 63 characters.",
+    "mksRegion.required": "Hosted MKS requires a region.",
+    "mksVersion.required": "Hosted MKS requires a Kubernetes version.",
+    "mksNodepoolFlavor.required": "Hosted MKS requires a node pool flavor.",
+    "mksNodepoolDesiredNodes.required": "Hosted MKS requires a node pool size.",
+    "mksNodepoolDesiredNodes.range": "Node pool size must be between 1 and 100.",
+    "region.required": "Region is required for node provisioning.",
     "region.pattern": "Region may only contain letters, numbers, and dashes.",
-    "flavor.required": "Flavor is required. Pick an OVH flavor.",
+    "flavor.required": "Flavor is required for node provisioning.",
     "flavor.pattern": "Flavor may only contain letters, numbers, dots, and dashes.",
-    "image.required": "Image is required. Select an image.",
+    "image.required": "Image is required for node provisioning.",
     "image.pattern": "Image may only contain letters, numbers, dots, underscores, and dashes."
   }
 }

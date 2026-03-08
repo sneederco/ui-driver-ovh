@@ -1,11 +1,47 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://sneederco.github.io/ui-driver-ovh/ovh-create-node-schema.json",
-  "title": "OVH Node Template Form",
+  "title": "OVH Create Cluster Form",
   "type": "object",
   "additionalProperties": false,
-  "required": ["region", "flavor", "image"],
+  "required": ["provisioningMode"],
   "properties": {
+    "provisioningMode": {
+      "type": "string",
+      "enum": ["hosted-mks", "node-rke2-k3s"],
+      "x-validationMessage": "Provisioning mode is required."
+    },
+    "mksClusterName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "pattern": "^[a-zA-Z0-9-]+$",
+      "x-validationMessage": "MKS cluster name must be 3-63 chars using letters, numbers, and dashes."
+    },
+    "mksRegion": {
+      "type": "string",
+      "minLength": 2,
+      "pattern": "^[A-Za-z0-9-]+$",
+      "not": { "enum": ["", "select-region", "default"] },
+      "x-validationMessage": "MKS region is required and must be a valid OVH region code."
+    },
+    "mksVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$",
+      "x-validationMessage": "MKS Kubernetes version is required (example: 1.30)."
+    },
+    "mksNodepoolFlavor": {
+      "type": "string",
+      "minLength": 2,
+      "pattern": "^[A-Za-z0-9.-]+$",
+      "x-validationMessage": "MKS node pool flavor is required and must be a valid flavor slug."
+    },
+    "mksNodepoolDesiredNodes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "x-validationMessage": "MKS node pool size must be between 1 and 100."
+    },
     "region": {
       "type": "string",
       "minLength": 2,
@@ -27,5 +63,31 @@
       "not": { "enum": ["", "select-image", "default"] },
       "x-validationMessage": "Image is required and must be a valid OVH image identifier."
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "provisioningMode": { "const": "hosted-mks" } },
+        "required": ["provisioningMode"]
+      },
+      "then": {
+        "required": [
+          "mksClusterName",
+          "mksRegion",
+          "mksVersion",
+          "mksNodepoolFlavor",
+          "mksNodepoolDesiredNodes"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": { "provisioningMode": { "const": "node-rke2-k3s" } },
+        "required": ["provisioningMode"]
+      },
+      "then": {
+        "required": ["region", "flavor", "image"]
+      }
+    }
+  ]
 }

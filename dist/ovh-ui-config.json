@@ -1,13 +1,142 @@
 {
   "driver": "ovh",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "displayName": "OVHcloud",
   "fields": [
+    {
+      "name": "provisioningMode",
+      "type": "select",
+      "label": "Provisioning Mode",
+      "required": true,
+      "fallbackOptions": [
+        {
+          "label": "Hosted OVH Managed Kubernetes (MKS)",
+          "value": "hosted-mks"
+        },
+        {
+          "label": "OVH nodes + RKE2/K3s",
+          "value": "node-rke2-k3s"
+        }
+      ],
+      "validationMessage": "Choose Hosted MKS or Node provisioning before continuing."
+    },
+    {
+      "name": "mksClusterName",
+      "type": "text",
+      "label": "MKS Cluster Name",
+      "requiredWhen": {
+        "provisioningMode": "hosted-mks"
+      },
+      "placeholder": "prod-mks-cluster",
+      "validationMessage": "Cluster name is required for hosted MKS and must be 3-63 chars (letters, numbers, dashes)."
+    },
+    {
+      "name": "mksRegion",
+      "type": "select",
+      "label": "MKS Region",
+      "requiredWhen": {
+        "provisioningMode": "hosted-mks"
+      },
+      "optionSource": {
+        "type": "api",
+        "endpoint": "/v1/ovh/mks/regions",
+        "labelKey": "name",
+        "valueKey": "id"
+      },
+      "fallbackOptions": [
+        {
+          "label": "GRA (Gravelines)",
+          "value": "GRA"
+        },
+        {
+          "label": "SBG (Strasbourg)",
+          "value": "SBG"
+        },
+        {
+          "label": "BHS (Beauharnois)",
+          "value": "BHS"
+        }
+      ],
+      "validationMessage": "Hosted MKS requires a valid region."
+    },
+    {
+      "name": "mksVersion",
+      "type": "select",
+      "label": "Kubernetes Version",
+      "requiredWhen": {
+        "provisioningMode": "hosted-mks"
+      },
+      "optionSource": {
+        "type": "api",
+        "endpoint": "/v1/ovh/mks/versions?region={{mksRegion}}",
+        "labelKey": "version",
+        "valueKey": "version"
+      },
+      "fallbackOptions": [
+        {
+          "label": "v1.30",
+          "value": "1.30"
+        },
+        {
+          "label": "v1.29",
+          "value": "1.29"
+        }
+      ],
+      "dependsOn": [
+        "mksRegion"
+      ],
+      "validationMessage": "Hosted MKS requires a supported Kubernetes version."
+    },
+    {
+      "name": "mksNodepoolFlavor",
+      "type": "select",
+      "label": "Default Node Pool SKU",
+      "requiredWhen": {
+        "provisioningMode": "hosted-mks"
+      },
+      "optionSource": {
+        "type": "api",
+        "endpoint": "/v1/ovh/mks/skus?region={{mksRegion}}",
+        "labelKey": "displayName",
+        "valueKey": "sku"
+      },
+      "fallbackOptions": [
+        {
+          "label": "b2-7 (General Purpose)",
+          "value": "b2-7"
+        },
+        {
+          "label": "c2-15 (Compute Optimized)",
+          "value": "c2-15"
+        },
+        {
+          "label": "r2-15 (Memory Optimized)",
+          "value": "r2-15"
+        }
+      ],
+      "dependsOn": [
+        "mksRegion"
+      ],
+      "validationMessage": "Hosted MKS requires a node pool SKU."
+    },
+    {
+      "name": "mksNodepoolDesiredNodes",
+      "type": "number",
+      "label": "Default Node Pool Size",
+      "requiredWhen": {
+        "provisioningMode": "hosted-mks"
+      },
+      "min": 1,
+      "max": 100,
+      "validationMessage": "Hosted MKS requires a node count between 1 and 100."
+    },
     {
       "name": "region",
       "type": "select",
       "label": "OVH Region",
-      "required": true,
+      "requiredWhen": {
+        "provisioningMode": "node-rke2-k3s"
+      },
       "optionSource": {
         "type": "api",
         "endpoint": "/v1/ovh/regions",
@@ -28,13 +157,15 @@
           "value": "BHS"
         }
       ],
-      "validationMessage": "Region is required. Select a valid OVH region."
+      "validationMessage": "Region is required for node provisioning."
     },
     {
       "name": "flavor",
       "type": "select",
       "label": "Instance Flavor",
-      "required": true,
+      "requiredWhen": {
+        "provisioningMode": "node-rke2-k3s"
+      },
       "optionSource": {
         "type": "api",
         "endpoint": "/v1/ovh/flavors?region={{region}}",
@@ -58,13 +189,15 @@
       "dependsOn": [
         "region"
       ],
-      "validationMessage": "Flavor is required. Pick an OVH flavor available in the selected region."
+      "validationMessage": "Flavor is required for node provisioning."
     },
     {
       "name": "image",
       "type": "select",
       "label": "Image",
-      "required": true,
+      "requiredWhen": {
+        "provisioningMode": "node-rke2-k3s"
+      },
       "optionSource": {
         "type": "api",
         "endpoint": "/v1/ovh/images?region={{region}}",
@@ -88,7 +221,7 @@
       "dependsOn": [
         "region"
       ],
-      "validationMessage": "Image is required. Select a boot image compatible with the region/flavor."
+      "validationMessage": "Image is required for node provisioning."
     }
   ]
 }

@@ -1,14 +1,143 @@
 {
   "ovh-ui-config.json": {
     "driver": "ovh",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "displayName": "OVHcloud",
     "fields": [
+      {
+        "name": "provisioningMode",
+        "type": "select",
+        "label": "Provisioning Mode",
+        "required": true,
+        "fallbackOptions": [
+          {
+            "label": "Hosted OVH Managed Kubernetes (MKS)",
+            "value": "hosted-mks"
+          },
+          {
+            "label": "OVH nodes + RKE2/K3s",
+            "value": "node-rke2-k3s"
+          }
+        ],
+        "validationMessage": "Choose Hosted MKS or Node provisioning before continuing."
+      },
+      {
+        "name": "mksClusterName",
+        "type": "text",
+        "label": "MKS Cluster Name",
+        "requiredWhen": {
+          "provisioningMode": "hosted-mks"
+        },
+        "placeholder": "prod-mks-cluster",
+        "validationMessage": "Cluster name is required for hosted MKS and must be 3-63 chars (letters, numbers, dashes)."
+      },
+      {
+        "name": "mksRegion",
+        "type": "select",
+        "label": "MKS Region",
+        "requiredWhen": {
+          "provisioningMode": "hosted-mks"
+        },
+        "optionSource": {
+          "type": "api",
+          "endpoint": "/v1/ovh/mks/regions",
+          "labelKey": "name",
+          "valueKey": "id"
+        },
+        "fallbackOptions": [
+          {
+            "label": "GRA (Gravelines)",
+            "value": "GRA"
+          },
+          {
+            "label": "SBG (Strasbourg)",
+            "value": "SBG"
+          },
+          {
+            "label": "BHS (Beauharnois)",
+            "value": "BHS"
+          }
+        ],
+        "validationMessage": "Hosted MKS requires a valid region."
+      },
+      {
+        "name": "mksVersion",
+        "type": "select",
+        "label": "Kubernetes Version",
+        "requiredWhen": {
+          "provisioningMode": "hosted-mks"
+        },
+        "optionSource": {
+          "type": "api",
+          "endpoint": "/v1/ovh/mks/versions?region={{mksRegion}}",
+          "labelKey": "version",
+          "valueKey": "version"
+        },
+        "fallbackOptions": [
+          {
+            "label": "v1.30",
+            "value": "1.30"
+          },
+          {
+            "label": "v1.29",
+            "value": "1.29"
+          }
+        ],
+        "dependsOn": [
+          "mksRegion"
+        ],
+        "validationMessage": "Hosted MKS requires a supported Kubernetes version."
+      },
+      {
+        "name": "mksNodepoolFlavor",
+        "type": "select",
+        "label": "Default Node Pool Flavor",
+        "requiredWhen": {
+          "provisioningMode": "hosted-mks"
+        },
+        "optionSource": {
+          "type": "api",
+          "endpoint": "/v1/ovh/flavors?region={{mksRegion}}",
+          "labelKey": "name",
+          "valueKey": "id"
+        },
+        "fallbackOptions": [
+          {
+            "label": "b2-7 (General Purpose)",
+            "value": "b2-7"
+          },
+          {
+            "label": "c2-15 (Compute Optimized)",
+            "value": "c2-15"
+          },
+          {
+            "label": "r2-15 (Memory Optimized)",
+            "value": "r2-15"
+          }
+        ],
+        "dependsOn": [
+          "mksRegion"
+        ],
+        "validationMessage": "Hosted MKS requires a node pool flavor."
+      },
+      {
+        "name": "mksNodepoolDesiredNodes",
+        "type": "number",
+        "label": "Default Node Pool Size",
+        "requiredWhen": {
+          "provisioningMode": "hosted-mks"
+        },
+        "min": 1,
+        "max": 100,
+        "validationMessage": "Hosted MKS requires a node count between 1 and 100."
+      },
       {
         "name": "region",
         "type": "select",
         "label": "OVH Region",
-        "required": true,
+        "requiredWhen": {
+          "provisioningMode": "node-rke2-k3s"
+        },
         "optionSource": {
           "type": "api",
           "endpoint": "/v1/ovh/regions",
@@ -29,13 +158,15 @@
             "value": "BHS"
           }
         ],
-        "validationMessage": "Region is required. Select a valid OVH region."
+        "validationMessage": "Region is required for node provisioning."
       },
       {
         "name": "flavor",
         "type": "select",
         "label": "Instance Flavor",
-        "required": true,
+        "requiredWhen": {
+          "provisioningMode": "node-rke2-k3s"
+        },
         "optionSource": {
           "type": "api",
           "endpoint": "/v1/ovh/flavors?region={{region}}",
@@ -59,13 +190,15 @@
         "dependsOn": [
           "region"
         ],
-        "validationMessage": "Flavor is required. Pick an OVH flavor available in the selected region."
+        "validationMessage": "Flavor is required for node provisioning."
       },
       {
         "name": "image",
         "type": "select",
         "label": "Image",
-        "required": true,
+        "requiredWhen": {
+          "provisioningMode": "node-rke2-k3s"
+        },
         "optionSource": {
           "type": "api",
           "endpoint": "/v1/ovh/images?region={{region}}",
@@ -89,22 +222,65 @@
         "dependsOn": [
           "region"
         ],
-        "validationMessage": "Image is required. Select a boot image compatible with the region/flavor."
+        "validationMessage": "Image is required for node provisioning."
       }
     ]
   },
   "ovh-create-node-schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://sneederco.github.io/ui-driver-ovh/ovh-create-node-schema.json",
-    "title": "OVH Node Template Form",
+    "title": "OVH Create Cluster Form",
     "type": "object",
     "additionalProperties": false,
     "required": [
-      "region",
-      "flavor",
-      "image"
+      "provisioningMode"
     ],
     "properties": {
+      "provisioningMode": {
+        "type": "string",
+        "enum": [
+          "hosted-mks",
+          "node-rke2-k3s"
+        ],
+        "x-validationMessage": "Provisioning mode is required."
+      },
+      "mksClusterName": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 63,
+        "pattern": "^[a-zA-Z0-9-]+$",
+        "x-validationMessage": "MKS cluster name must be 3-63 chars using letters, numbers, and dashes."
+      },
+      "mksRegion": {
+        "type": "string",
+        "minLength": 2,
+        "pattern": "^[A-Za-z0-9-]+$",
+        "not": {
+          "enum": [
+            "",
+            "select-region",
+            "default"
+          ]
+        },
+        "x-validationMessage": "MKS region is required and must be a valid OVH region code."
+      },
+      "mksVersion": {
+        "type": "string",
+        "pattern": "^[0-9]+\\.[0-9]+$",
+        "x-validationMessage": "MKS Kubernetes version is required (example: 1.30)."
+      },
+      "mksNodepoolFlavor": {
+        "type": "string",
+        "minLength": 2,
+        "pattern": "^[A-Za-z0-9.-]+$",
+        "x-validationMessage": "MKS node pool flavor is required and must be a valid flavor slug."
+      },
+      "mksNodepoolDesiredNodes": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "x-validationMessage": "MKS node pool size must be between 1 and 100."
+      },
       "region": {
         "type": "string",
         "minLength": 2,
@@ -144,15 +320,137 @@
         },
         "x-validationMessage": "Image is required and must be a valid OVH image identifier."
       }
-    }
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "provisioningMode": {
+              "const": "hosted-mks"
+            }
+          },
+          "required": [
+            "provisioningMode"
+          ]
+        },
+        "then": {
+          "required": [
+            "mksClusterName",
+            "mksRegion",
+            "mksVersion",
+            "mksNodepoolFlavor",
+            "mksNodepoolDesiredNodes"
+          ]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "provisioningMode": {
+              "const": "node-rke2-k3s"
+            }
+          },
+          "required": [
+            "provisioningMode"
+          ]
+        },
+        "then": {
+          "required": [
+            "region",
+            "flavor",
+            "image"
+          ]
+        }
+      }
+    ]
   },
   "field-definitions.sample.json": {
     "sampleFields": [
       {
+        "name": "provisioningMode",
+        "label": "Provisioning Mode",
+        "type": "select",
+        "required": true,
+        "placeholder": "Choose provisioning mode",
+        "exampleValues": [
+          "hosted-mks",
+          "node-rke2-k3s"
+        ]
+      },
+      {
+        "name": "mksClusterName",
+        "label": "MKS Cluster Name",
+        "type": "text",
+        "requiredWhen": {
+          "provisioningMode": "hosted-mks"
+        },
+        "placeholder": "prod-mks-cluster",
+        "exampleValues": [
+          "prod-mks-cluster",
+          "dev-mks"
+        ]
+      },
+      {
+        "name": "mksRegion",
+        "label": "MKS Region",
+        "type": "select",
+        "requiredWhen": {
+          "provisioningMode": "hosted-mks"
+        },
+        "placeholder": "Choose MKS region",
+        "exampleValues": [
+          "GRA",
+          "SBG",
+          "BHS"
+        ]
+      },
+      {
+        "name": "mksVersion",
+        "label": "Kubernetes Version",
+        "type": "select",
+        "requiredWhen": {
+          "provisioningMode": "hosted-mks"
+        },
+        "placeholder": "Choose Kubernetes version",
+        "exampleValues": [
+          "1.30",
+          "1.29"
+        ]
+      },
+      {
+        "name": "mksNodepoolFlavor",
+        "label": "Default Node Pool Flavor",
+        "type": "select",
+        "requiredWhen": {
+          "provisioningMode": "hosted-mks"
+        },
+        "placeholder": "Choose node pool flavor",
+        "exampleValues": [
+          "b2-7",
+          "c2-15",
+          "r2-15"
+        ]
+      },
+      {
+        "name": "mksNodepoolDesiredNodes",
+        "label": "Default Node Pool Size",
+        "type": "number",
+        "requiredWhen": {
+          "provisioningMode": "hosted-mks"
+        },
+        "exampleValues": [
+          1,
+          3,
+          5
+        ]
+      },
+      {
         "name": "region",
         "label": "OVH Region",
         "type": "select",
-        "required": true,
+        "requiredWhen": {
+          "provisioningMode": "node-rke2-k3s"
+        },
         "placeholder": "Choose region",
         "exampleValues": [
           "GRA",
@@ -164,7 +462,9 @@
         "name": "flavor",
         "label": "Instance Flavor",
         "type": "select",
-        "required": true,
+        "requiredWhen": {
+          "provisioningMode": "node-rke2-k3s"
+        },
         "placeholder": "Choose flavor",
         "exampleValues": [
           "b2-7",
@@ -176,7 +476,9 @@
         "name": "image",
         "label": "Image",
         "type": "select",
-        "required": true,
+        "requiredWhen": {
+          "provisioningMode": "node-rke2-k3s"
+        },
         "placeholder": "Choose image",
         "exampleValues": [
           "ubuntu-22.04",
@@ -188,11 +490,20 @@
   },
   "validation-messages.sample.json": {
     "validationMessages": {
-      "region.required": "Region is required. Select a valid OVH region.",
+      "provisioningMode.required": "Choose Hosted MKS or Node provisioning before continuing.",
+      "mksClusterName.required": "Cluster name is required for hosted MKS.",
+      "mksClusterName.pattern": "Cluster name must contain only letters, numbers, and dashes.",
+      "mksClusterName.length": "Cluster name must be between 3 and 63 characters.",
+      "mksRegion.required": "Hosted MKS requires a region.",
+      "mksVersion.required": "Hosted MKS requires a Kubernetes version.",
+      "mksNodepoolFlavor.required": "Hosted MKS requires a node pool flavor.",
+      "mksNodepoolDesiredNodes.required": "Hosted MKS requires a node pool size.",
+      "mksNodepoolDesiredNodes.range": "Node pool size must be between 1 and 100.",
+      "region.required": "Region is required for node provisioning.",
       "region.pattern": "Region may only contain letters, numbers, and dashes.",
-      "flavor.required": "Flavor is required. Pick an OVH flavor.",
+      "flavor.required": "Flavor is required for node provisioning.",
       "flavor.pattern": "Flavor may only contain letters, numbers, dots, and dashes.",
-      "image.required": "Image is required. Select an image.",
+      "image.required": "Image is required for node provisioning.",
       "image.pattern": "Image may only contain letters, numbers, dots, underscores, and dashes."
     }
   }

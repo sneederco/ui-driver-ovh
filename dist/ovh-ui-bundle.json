@@ -1,0 +1,199 @@
+{
+  "ovh-ui-config.json": {
+    "driver": "ovh",
+    "version": "1.0.0",
+    "displayName": "OVHcloud",
+    "fields": [
+      {
+        "name": "region",
+        "type": "select",
+        "label": "OVH Region",
+        "required": true,
+        "optionSource": {
+          "type": "api",
+          "endpoint": "/v1/ovh/regions",
+          "labelKey": "name",
+          "valueKey": "id"
+        },
+        "fallbackOptions": [
+          {
+            "label": "GRA (Gravelines)",
+            "value": "GRA"
+          },
+          {
+            "label": "SBG (Strasbourg)",
+            "value": "SBG"
+          },
+          {
+            "label": "BHS (Beauharnois)",
+            "value": "BHS"
+          }
+        ],
+        "validationMessage": "Region is required. Select a valid OVH region."
+      },
+      {
+        "name": "flavor",
+        "type": "select",
+        "label": "Instance Flavor",
+        "required": true,
+        "optionSource": {
+          "type": "api",
+          "endpoint": "/v1/ovh/flavors?region={{region}}",
+          "labelKey": "name",
+          "valueKey": "id"
+        },
+        "fallbackOptions": [
+          {
+            "label": "b2-7 (General Purpose)",
+            "value": "b2-7"
+          },
+          {
+            "label": "c2-15 (Compute Optimized)",
+            "value": "c2-15"
+          },
+          {
+            "label": "r2-15 (Memory Optimized)",
+            "value": "r2-15"
+          }
+        ],
+        "dependsOn": [
+          "region"
+        ],
+        "validationMessage": "Flavor is required. Pick an OVH flavor available in the selected region."
+      },
+      {
+        "name": "image",
+        "type": "select",
+        "label": "Image",
+        "required": true,
+        "optionSource": {
+          "type": "api",
+          "endpoint": "/v1/ovh/images?region={{region}}",
+          "labelKey": "name",
+          "valueKey": "id"
+        },
+        "fallbackOptions": [
+          {
+            "label": "Ubuntu 22.04",
+            "value": "ubuntu-22.04"
+          },
+          {
+            "label": "Debian 12",
+            "value": "debian-12"
+          },
+          {
+            "label": "Rocky Linux 9",
+            "value": "rocky-9"
+          }
+        ],
+        "dependsOn": [
+          "region"
+        ],
+        "validationMessage": "Image is required. Select a boot image compatible with the region/flavor."
+      }
+    ]
+  },
+  "ovh-create-node-schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://sneederco.github.io/ui-driver-ovh/ovh-create-node-schema.json",
+    "title": "OVH Node Template Form",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "region",
+      "flavor",
+      "image"
+    ],
+    "properties": {
+      "region": {
+        "type": "string",
+        "minLength": 2,
+        "pattern": "^[A-Za-z0-9-]+$",
+        "not": {
+          "enum": [
+            "",
+            "select-region",
+            "default"
+          ]
+        },
+        "x-validationMessage": "Region is required and must be a valid OVH region code."
+      },
+      "flavor": {
+        "type": "string",
+        "minLength": 2,
+        "pattern": "^[A-Za-z0-9.-]+$",
+        "not": {
+          "enum": [
+            "",
+            "select-flavor",
+            "default"
+          ]
+        },
+        "x-validationMessage": "Flavor is required and must be a valid OVH flavor slug."
+      },
+      "image": {
+        "type": "string",
+        "minLength": 2,
+        "pattern": "^[A-Za-z0-9._-]+$",
+        "not": {
+          "enum": [
+            "",
+            "select-image",
+            "default"
+          ]
+        },
+        "x-validationMessage": "Image is required and must be a valid OVH image identifier."
+      }
+    }
+  },
+  "field-definitions.sample.json": {
+    "sampleFields": [
+      {
+        "name": "region",
+        "label": "OVH Region",
+        "type": "select",
+        "required": true,
+        "placeholder": "Choose region",
+        "exampleValues": [
+          "GRA",
+          "SBG",
+          "BHS"
+        ]
+      },
+      {
+        "name": "flavor",
+        "label": "Instance Flavor",
+        "type": "select",
+        "required": true,
+        "placeholder": "Choose flavor",
+        "exampleValues": [
+          "b2-7",
+          "c2-15",
+          "r2-15"
+        ]
+      },
+      {
+        "name": "image",
+        "label": "Image",
+        "type": "select",
+        "required": true,
+        "placeholder": "Choose image",
+        "exampleValues": [
+          "ubuntu-22.04",
+          "debian-12",
+          "rocky-9"
+        ]
+      }
+    ]
+  },
+  "validation-messages.sample.json": {
+    "validationMessages": {
+      "region.required": "Region is required. Select a valid OVH region.",
+      "region.pattern": "Region may only contain letters, numbers, and dashes.",
+      "flavor.required": "Flavor is required. Pick an OVH flavor.",
+      "flavor.pattern": "Flavor may only contain letters, numbers, dots, and dashes.",
+      "image.required": "Image is required. Select an image.",
+      "image.pattern": "Image may only contain letters, numbers, dots, underscores, and dashes."
+    }
+  }
+}

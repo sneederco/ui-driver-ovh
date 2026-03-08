@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sneederco.github.io/ui-driver-ovh/ovh-create-node-schema.json",
+  "title": "OVH Node Template Form",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "region",
+    "flavor",
+    "image"
+  ],
+  "properties": {
+    "region": {
+      "type": "string",
+      "minLength": 2,
+      "pattern": "^[A-Za-z0-9-]+$",
+      "not": {
+        "enum": [
+          "",
+          "select-region",
+          "default"
+        ]
+      },
+      "x-validationMessage": "Region is required and must be a valid OVH region code."
+    },
+    "flavor": {
+      "type": "string",
+      "minLength": 2,
+      "pattern": "^[A-Za-z0-9.-]+$",
+      "not": {
+        "enum": [
+          "",
+          "select-flavor",
+          "default"
+        ]
+      },
+      "x-validationMessage": "Flavor is required and must be a valid OVH flavor slug."
+    },
+    "image": {
+      "type": "string",
+      "minLength": 2,
+      "pattern": "^[A-Za-z0-9._-]+$",
+      "not": {
+        "enum": [
+          "",
+          "select-image",
+          "default"
+        ]
+      },
+      "x-validationMessage": "Image is required and must be a valid OVH image identifier."
+    }
+  }
+}

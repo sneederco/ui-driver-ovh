@@ -1,0 +1,63 @@
+{
+  "driver": "ovh",
+  "version": "1.0.0",
+  "displayName": "OVHcloud",
+  "fields": [
+    {
+      "name": "region",
+      "type": "select",
+      "label": "OVH Region",
+      "required": true,
+      "optionSource": {
+        "type": "api",
+        "endpoint": "/v1/ovh/regions",
+        "labelKey": "name",
+        "valueKey": "id"
+      },
+      "fallbackOptions": [
+        { "label": "GRA (Gravelines)", "value": "GRA" },
+        { "label": "SBG (Strasbourg)", "value": "SBG" },
+        { "label": "BHS (Beauharnois)", "value": "BHS" }
+      ],
+      "validationMessage": "Region is required. Select a valid OVH region."
+    },
+    {
+      "name": "flavor",
+      "type": "select",
+      "label": "Instance Flavor",
+      "required": true,
+      "optionSource": {
+        "type": "api",
+        "endpoint": "/v1/ovh/flavors?region={{region}}",
+        "labelKey": "name",
+        "valueKey": "id"
+      },
+      "fallbackOptions": [
+        { "label": "b2-7 (General Purpose)", "value": "b2-7" },
+        { "label": "c2-15 (Compute Optimized)", "value": "c2-15" },
+        { "label": "r2-15 (Memory Optimized)", "value": "r2-15" }
+      ],
+      "dependsOn": ["region"],
+      "validationMessage": "Flavor is required. Pick an OVH flavor available in the selected region."
+    },
+    {
+      "name": "image",
+      "type": "select",
+      "label": "Image",
+      "required": true,
+      "optionSource": {
+        "type": "api",
+        "endpoint": "/v1/ovh/images?region={{region}}",
+        "labelKey": "name",
+        "valueKey": "id"
+      },
+      "fallbackOptions": [
+        { "label": "Ubuntu 22.04", "value": "ubuntu-22.04" },
+        { "label": "Debian 12", "value": "debian-12" },
+        { "label": "Rocky Linux 9", "value": "rocky-9" }
+      ],
+      "dependsOn": ["region"],
+      "validationMessage": "Image is required. Select a boot image compatible with the region/flavor."
+    }
+  ]
+}

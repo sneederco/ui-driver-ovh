@@ -1,0 +1,40 @@
+{
+  "sampleFields": [
+    {
+      "name": "region",
+      "label": "OVH Region",
+      "type": "select",
+      "required": true,
+      "placeholder": "Choose region",
+      "exampleValues": [
+        "GRA",
+        "SBG",
+        "BHS"
+      ]
+    },
+    {
+      "name": "flavor",
+      "label": "Instance Flavor",
+      "type": "select",
+      "required": true,
+      "placeholder": "Choose flavor",
+      "exampleValues": [
+        "b2-7",
+        "c2-15",
+        "r2-15"
+      ]
+    },
+    {
+      "name": "image",
+      "label": "Image",
+      "type": "select",
+      "required": true,
+      "placeholder": "Choose image",
+      "exampleValues": [
+        "ubuntu-22.04",
+        "debian-12",
+        "rocky-9"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "ui-driver-ovh",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Rancher UI configuration/schema for OVH node driver fields",
+  "scripts": {
+    "lint": "node scripts/lint.js",
+    "build": "node scripts/build.js",
+    "validate": "node scripts/validate.js",
+    "check": "npm run lint && npm run build && npm run validate"
+  }
+}

@@ -3,7 +3,6 @@ import CreateEditView from '@shell/mixins/create-edit-view';
 import LabeledSelect from '@shell/components/form/LabeledSelect';
 import LabeledInput from '@shell/components/form/LabeledInput';
 import Checkbox from '@shell/components/form/Checkbox';
-import { _VIEW } from '@shell/config/query-params';
 
 const REGIONS = [
   { label: 'US East Virginia 1', value: 'US-EAST-VA-1' },
@@ -28,34 +27,13 @@ export default {
   mixins: [CreateEditView],
 
   props: {
-    uuid: {
-      type:     String,
-      required: true,
-    },
-    cluster: {
-      type:    Object,
-      default: () => ({})
-    },
-    credentialId: {
-      type:     String,
-      required: true,
-    },
-    disabled: {
-      type:    Boolean,
-      default: false
-    },
-    busy: {
-      type:    Boolean,
-      default: false
-    },
-    provider: {
-      type:     String,
-      required: true,
-    },
-    poolIndex: {
-      type:    Number,
-      default: 0
-    }
+    uuid: { type: String, required: true },
+    cluster: { type: Object, default: () => ({}) },
+    credentialId: { type: String, required: true },
+    disabled: { type: Boolean, default: false },
+    busy: { type: Boolean, default: false },
+    provider: { type: String, required: true },
+    poolIndex: { type: Number, default: 0 }
   },
 
   data() {
@@ -77,43 +55,26 @@ export default {
 
   computed: {
     isView() {
-      return this.mode === _VIEW;
+      return this.mode === 'view';
     }
   },
 
   watch: {
-    region(val) { 
-      this.value.region = val; 
-    },
-    flavorName(val) { 
-      this.value.flavorName = val; 
-    },
-    imageName(val) { 
-      this.value.imageName = val; 
-    },
-    billingPeriod(val) { 
-      this.value.billingPeriod = val; 
-    },
-    enableAutoscaler() { 
-      this.syncAutoscaler(); 
-    },
-    autoscalerMin() { 
-      this.syncAutoscaler(); 
-    },
-    autoscalerMax() { 
-      this.syncAutoscaler(); 
-    },
+    region(val) { this.value.region = val; },
+    flavorName(val) { this.value.flavorName = val; },
+    imageName(val) { this.value.imageName = val; },
+    billingPeriod(val) { this.value.billingPeriod = val; },
+    enableAutoscaler() { this.syncAutoscaler(); },
+    autoscalerMin() { this.syncAutoscaler(); },
+    autoscalerMax() { this.syncAutoscaler(); },
   },
 
   methods: {
     syncAutoscaler() {
-      if (!this.cluster?.spec?.rkeConfig?.machinePools?.[this.poolIndex]) {
-        return;
-      }
+      if (!this.cluster?.spec?.rkeConfig?.machinePools?.[this.poolIndex]) return;
       const pool = this.cluster.spec.rkeConfig.machinePools[this.poolIndex];
-      if (!pool.machineDeploymentAnnotations) {
-        pool.machineDeploymentAnnotations = {};
-      }
+      if (!pool.machineDeploymentAnnotations) pool.machineDeploymentAnnotations = {};
+      
       if (this.enableAutoscaler) {
         pool.machineDeploymentAnnotations['cluster.provisioning.cattle.io/autoscaler-min-size'] = String(this.autoscalerMin);
         pool.machineDeploymentAnnotations['cluster.provisioning.cattle.io/autoscaler-max-size'] = String(this.autoscalerMax);
@@ -123,7 +84,6 @@ export default {
       }
       this.$emit('validationChanged', true);
     },
-
     test() {
       this.value.region = this.region;
       this.value.flavorName = this.flavorName;
@@ -137,110 +97,36 @@ export default {
 
 <template>
   <div>
-    <div class="ovh-config">
-      <h3>OVHcloud Instance Configuration</h3>
-      <div class="row mt-20">
-        <div class="col span-6">
-          <LabeledSelect
-            v-model:value="region"
-            label="Region"
-            :options="regionOptions"
-            :disabled="disabled || busy"
-            :mode="mode"
-          />
-        </div>
-        <div class="col span-6">
-          <LabeledInput
-            v-model:value="flavorName"
-            label="Flavor"
-            placeholder="b3-8"
-            :disabled="disabled || busy"
-            :mode="mode"
-          />
-        </div>
+    <h3>OVHcloud Instance</h3>
+    <div class="row mt-20">
+      <div class="col span-6">
+        <LabeledSelect v-model:value="region" label="Region" :options="regionOptions" :disabled="disabled || busy" :mode="mode" />
       </div>
-      <div class="row mt-20">
-        <div class="col span-6">
-          <LabeledInput
-            v-model:value="imageName"
-            label="Image"
-            placeholder="Ubuntu 24.04"
-            :disabled="disabled || busy"
-            :mode="mode"
-          />
-        </div>
-        <div class="col span-6">
-          <LabeledSelect
-            v-model:value="billingPeriod"
-            label="Billing Period"
-            :options="billingOptions"
-            :disabled="disabled || busy"
-            :mode="mode"
-          />
-        </div>
+      <div class="col span-6">
+        <LabeledInput v-model:value="flavorName" label="Flavor" placeholder="b3-8" :disabled="disabled || busy" :mode="mode" />
       </div>
-
-      <div class="autoscaler-section mt-30">
-        <h3>Cluster Autoscaler</h3>
-        <p class="text-muted">
-          Enable automatic scaling based on pod resource requests.
-        </p>
-        <div class="row mt-20">
-          <div class="col span-12">
-            <Checkbox
-              v-model:value="enableAutoscaler"
-              label="Enable Cluster Autoscaler"
-              :disabled="disabled || busy"
-              :mode="mode"
-            />
-          </div>
-        </div>
-        <div v-if="enableAutoscaler" class="autoscaler-config mt-20">
-          <div class="row">
-            <div class="col span-6">
-              <LabeledInput
-                v-model:value="autoscalerMin"
-                label="Minimum Nodes"
-                type="number"
-                :min="1"
-                :disabled="disabled || busy"
-                :mode="mode"
-              />
-            </div>
-            <div class="col span-6">
-              <LabeledInput
-                v-model:value="autoscalerMax"
-                label="Maximum Nodes"
-                type="number"
-                :min="1"
-                :disabled="disabled || busy"
-                :mode="mode"
-              />
-            </div>
-          </div>
-        </div>
+    </div>
+    <div class="row mt-20">
+      <div class="col span-6">
+        <LabeledInput v-model:value="imageName" label="Image" placeholder="Ubuntu 24.04" :disabled="disabled || busy" :mode="mode" />
+      </div>
+      <div class="col span-6">
+        <LabeledSelect v-model:value="billingPeriod" label="Billing" :options="billingOptions" :disabled="disabled || busy" :mode="mode" />
+      </div>
+    </div>
+    <h3 class="mt-30">Cluster Autoscaler</h3>
+    <div class="row mt-10">
+      <div class="col span-12">
+        <Checkbox v-model:value="enableAutoscaler" label="Enable Autoscaler" :disabled="disabled || busy" :mode="mode" />
+      </div>
+    </div>
+    <div v-if="enableAutoscaler" class="row mt-20">
+      <div class="col span-6">
+        <LabeledInput v-model:value="autoscalerMin" label="Min Nodes" type="number" :disabled="disabled || busy" :mode="mode" />
+      </div>
+      <div class="col span-6">
+        <LabeledInput v-model:value="autoscalerMax" label="Max Nodes" type="number" :disabled="disabled || busy" :mode="mode" />
       </div>
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.ovh-config h3 {
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-.autoscaler-section {
-  border-top: 1px solid var(--border);
-  padding-top: 20px;
-}
-.autoscaler-config {
-  background: var(--body-bg);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 15px;
-}
-.text-muted {
-  color: var(--muted);
-  font-size: 13px;
-}
-</style>

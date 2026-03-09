@@ -1,0 +1,42 @@
+name: Build Rancher Extension
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'rancher-extension/**'
+      - '.github/workflows/rancher-extension.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: [self-hosted, Linux, X64, homelab]
+    defaults:
+      run:
+        working-directory: rancher-extension
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: rancher-extension/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build extension package
+        run: yarn build-pkg ovh-autoscaler
+
+      - name: List built files
+        run: ls -la dist-pkg/ovh-autoscaler-*/
+
+      - name: Upload extension artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovh-autoscaler-extension
+          path: rancher-extension/dist-pkg/ovh-autoscaler-*/
+          retention-days: 30

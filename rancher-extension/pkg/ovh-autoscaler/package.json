@@ -1,0 +1,26 @@
+{
+  "name": "@sneederco/ovh-autoscaler",
+  "version": "1.0.0",
+  "description": "OVHcloud machine configuration with Cluster Autoscaler support for Rancher",
+  "repository": "https://github.com/sneederco/ui-driver-ovh",
+  "keywords": [
+    "rancher",
+    "ovh",
+    "ovhcloud",
+    "autoscaler",
+    "node-driver"
+  ],
+  "license": "Apache-2.0",
+  "author": "Sneederco",
+  "rancher": {
+    "annotations": {
+      "catalog.cattle.io/display-name": "OVHcloud (Sneederco)",
+      "catalog.cattle.io/ui-extensions-version": ">=3"
+    }
+  },
+  "files": [
+    "*.vue",
+    "machine-config/**",
+    "l10n/**"
+  ]
+}

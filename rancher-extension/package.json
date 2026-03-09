@@ -1,0 +1,14 @@
+{
+  "name": "@sneederco/ovh-rancher-extension",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "API=$API yarn shell",
+    "shell": "@rancher/shell",
+    "build-pkg": "./node_modules/@rancher/shell/scripts/build-pkg.sh",
+    "serve-pkgs": "./node_modules/@rancher/shell/scripts/serve-pkgs.sh"
+  },
+  "dependencies": {
+    "@rancher/shell": "^3.0.0"
+  }
+}

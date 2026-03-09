@@ -1,8 +1,5 @@
 <script>
 import CreateEditView from '@shell/mixins/create-edit-view';
-import LabeledSelect from '@shell/components/form/LabeledSelect';
-import LabeledInput from '@shell/components/form/LabeledInput';
-import Checkbox from '@shell/components/form/Checkbox';
 
 const REGIONS = [
   { label: 'US East Virginia 1', value: 'US-EAST-VA-1' },
@@ -12,20 +9,9 @@ const REGIONS = [
   { label: 'UK (UK1)', value: 'UK1' },
 ];
 
-const BILLING_OPTIONS = [
-  { label: 'Hourly', value: 'hourly' },
-  { label: 'Monthly', value: 'monthly' }
-];
-
 export default {
   name: 'OvhMachineConfig',
-
-  components: {
-    LabeledInput, LabeledSelect, Checkbox
-  },
-
   mixins: [CreateEditView],
-
   props: {
     uuid: { type: String, required: true },
     cluster: { type: Object, default: () => ({}) },
@@ -35,46 +21,34 @@ export default {
     provider: { type: String, required: true },
     poolIndex: { type: Number, default: 0 }
   },
-
   data() {
     const pool = this.cluster?.spec?.rkeConfig?.machinePools?.[this.poolIndex] || {};
-    const annotations = pool.machineDeploymentAnnotations || {};
-    
+    const ann = pool.machineDeploymentAnnotations || {};
     return {
-      regionOptions: REGIONS,
-      billingOptions: BILLING_OPTIONS,
+      regions: REGIONS,
       region: this.value?.region || 'US-EAST-VA-1',
       flavorName: this.value?.flavorName || 'b3-8',
       imageName: this.value?.imageName || 'Ubuntu 24.04',
       billingPeriod: this.value?.billingPeriod || 'hourly',
-      enableAutoscaler: !!annotations['cluster.provisioning.cattle.io/autoscaler-min-size'],
-      autoscalerMin: parseInt(annotations['cluster.provisioning.cattle.io/autoscaler-min-size']) || 1,
-      autoscalerMax: parseInt(annotations['cluster.provisioning.cattle.io/autoscaler-max-size']) || 10,
+      enableAutoscaler: !!ann['cluster.provisioning.cattle.io/autoscaler-min-size'],
+      autoscalerMin: parseInt(ann['cluster.provisioning.cattle.io/autoscaler-min-size']) || 1,
+      autoscalerMax: parseInt(ann['cluster.provisioning.cattle.io/autoscaler-max-size']) || 10,
     };
   },
-
-  computed: {
-    isView() {
-      return this.mode === 'view';
-    }
-  },
-
   watch: {
-    region(val) { this.value.region = val; },
-    flavorName(val) { this.value.flavorName = val; },
-    imageName(val) { this.value.imageName = val; },
-    billingPeriod(val) { this.value.billingPeriod = val; },
+    region(v) { this.value.region = v; },
+    flavorName(v) { this.value.flavorName = v; },
+    imageName(v) { this.value.imageName = v; },
+    billingPeriod(v) { this.value.billingPeriod = v; },
     enableAutoscaler() { this.syncAutoscaler(); },
     autoscalerMin() { this.syncAutoscaler(); },
     autoscalerMax() { this.syncAutoscaler(); },
   },
-
   methods: {
     syncAutoscaler() {
-      if (!this.cluster?.spec?.rkeConfig?.machinePools?.[this.poolIndex]) return;
-      const pool = this.cluster.spec.rkeConfig.machinePools[this.poolIndex];
+      const pool = this.cluster?.spec?.rkeConfig?.machinePools?.[this.poolIndex];
+      if (!pool) return;
       if (!pool.machineDeploymentAnnotations) pool.machineDeploymentAnnotations = {};
-      
       if (this.enableAutoscaler) {
         pool.machineDeploymentAnnotations['cluster.provisioning.cattle.io/autoscaler-min-size'] = String(this.autoscalerMin);
         pool.machineDeploymentAnnotations['cluster.provisioning.cattle.io/autoscaler-max-size'] = String(this.autoscalerMax);
@@ -96,37 +70,33 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div style="padding:12px;">
     <h3>OVHcloud Instance</h3>
-    <div class="row mt-20">
-      <div class="col span-6">
-        <LabeledSelect v-model:value="region" label="Region" :options="regionOptions" :disabled="disabled || busy" :mode="mode" />
-      </div>
-      <div class="col span-6">
-        <LabeledInput v-model:value="flavorName" label="Flavor" placeholder="b3-8" :disabled="disabled || busy" :mode="mode" />
-      </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <label>Region
+        <select v-model="region" :disabled="disabled || busy" style="width:100%">
+          <option v-for="r in regions" :key="r.value" :value="r.value">{{ r.label }}</option>
+        </select>
+      </label>
+      <label>Flavor
+        <input v-model="flavorName" :disabled="disabled || busy" style="width:100%" />
+      </label>
+      <label>Image
+        <input v-model="imageName" :disabled="disabled || busy" style="width:100%" />
+      </label>
+      <label>Billing
+        <select v-model="billingPeriod" :disabled="disabled || busy" style="width:100%">
+          <option value="hourly">Hourly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </label>
     </div>
-    <div class="row mt-20">
-      <div class="col span-6">
-        <LabeledInput v-model:value="imageName" label="Image" placeholder="Ubuntu 24.04" :disabled="disabled || busy" :mode="mode" />
-      </div>
-      <div class="col span-6">
-        <LabeledSelect v-model:value="billingPeriod" label="Billing" :options="billingOptions" :disabled="disabled || busy" :mode="mode" />
-      </div>
-    </div>
-    <h3 class="mt-30">Cluster Autoscaler</h3>
-    <div class="row mt-10">
-      <div class="col span-12">
-        <Checkbox v-model:value="enableAutoscaler" label="Enable Autoscaler" :disabled="disabled || busy" :mode="mode" />
-      </div>
-    </div>
-    <div v-if="enableAutoscaler" class="row mt-20">
-      <div class="col span-6">
-        <LabeledInput v-model:value="autoscalerMin" label="Min Nodes" type="number" :disabled="disabled || busy" :mode="mode" />
-      </div>
-      <div class="col span-6">
-        <LabeledInput v-model:value="autoscalerMax" label="Max Nodes" type="number" :disabled="disabled || busy" :mode="mode" />
-      </div>
+
+    <h3 style="margin-top:16px;">Cluster Autoscaler</h3>
+    <label><input type="checkbox" v-model="enableAutoscaler" :disabled="disabled || busy" /> Enable Autoscaler</label>
+    <div v-if="enableAutoscaler" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+      <label>Min Nodes <input type="number" min="1" v-model.number="autoscalerMin" :disabled="disabled || busy" style="width:100%" /></label>
+      <label>Max Nodes <input type="number" min="1" v-model.number="autoscalerMax" :disabled="disabled || busy" style="width:100%" /></label>
     </div>
   </div>
 </template>

@@ -3,97 +3,300 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OVH Dual-Path Cluster UX</title>
+    <title>OVH Dual-Path Cluster UX (Sneederco)</title>
     <style>
-      body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 900px; }
-      fieldset { margin: 1rem 0; padding: 1rem; }
+      * { box-sizing: border-box; }
+      body { 
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; 
+        margin: 2rem auto;
+        max-width: 900px;
+        background: #f5f5f5;
+        padding: 1rem;
+      }
+      .container {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+      .brand-header {
+        border-bottom: 3px solid #123F6D;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+      }
+      .brand-header h1 {
+        color: #123F6D;
+        margin: 0 0 0.5rem 0;
+      }
+      .brand-header .subtitle {
+        color: #666;
+        font-size: 0.95rem;
+      }
+      fieldset { 
+        margin: 1.5rem 0; 
+        padding: 1.5rem; 
+        border: 2px solid #e5e7eb;
+        border-radius: 6px;
+      }
+      legend {
+        font-weight: 600;
+        color: #123F6D;
+        padding: 0 0.5rem;
+      }
       .hidden { display: none; }
       .error { color: #b91c1c; font-weight: 600; }
       .ok { color: #166534; font-weight: 600; }
-      label { display: block; margin: 0.5rem 0; }
-      input, select { min-width: 280px; }
-      code { background: #f3f4f6; padding: 0.1rem 0.3rem; }
+      label { 
+        display: block; 
+        margin: 1rem 0 0.25rem 0;
+        font-weight: 500;
+        color: #374151;
+      }
+      label .required::after {
+        content: " *";
+        color: #dc2626;
+      }
+      .field-help {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin: 0.25rem 0 0.5rem 0;
+        font-style: italic;
+      }
+      input, select { 
+        min-width: 280px;
+        padding: 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 0.95rem;
+      }
+      input:focus, select:focus {
+        outline: none;
+        border-color: #123F6D;
+        box-shadow: 0 0 0 3px rgba(18,63,109,0.1);
+      }
+      input.invalid, select.invalid {
+        border-color: #dc2626;
+      }
+      button { 
+        background: #123F6D;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-top: 1rem;
+      }
+      button:hover {
+        background: #0d2f52;
+      }
+      code { 
+        background: #f3f4f6; 
+        padding: 0.2rem 0.4rem; 
+        border-radius: 3px;
+        font-size: 0.9rem;
+      }
+      #result {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+      }
+      #result.error {
+        background: #fee2e2;
+        border: 1px solid #fca5a5;
+      }
+      #result.ok {
+        background: #d1fae5;
+        border: 1px solid #6ee7b7;
+      }
+      .billing-info {
+        background: #eff6ff;
+        border-left: 3px solid #3b82f6;
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+        border-radius: 4px;
+      }
     </style>
   </head>
   <body>
-    <h1>Issue #2 — OVH Dual Provisioning UX</h1>
-    <p>Choose one path: <strong>Hosted OVH MKS</strong> or <strong>OVH Nodes + RKE2/K3s</strong>.</p>
+    <div class="container">
+      <div class="brand-header">
+        <h1>🚀 OVH Dual-Path Cluster UX</h1>
+        <div class="subtitle">Powered by Sneederco - Enhanced Rancher Integration</div>
+      </div>
 
-    <label>
-      Provisioning path
-      <select id="pathSelect">
-        <option value="mks">Hosted OVH MKS</option>
-        <option value="nodes">OVH Nodes + RKE2/K3s</option>
-      </select>
-    </label>
+      <p>Choose one path: <strong>Hosted OVH MKS</strong> or <strong>OVH Nodes + RKE2/K3s</strong>.</p>
 
-    <fieldset id="commonFields">
-      <legend>Common Required</legend>
-      <label>OVH Project ID <input id="projectId" placeholder="xxxx-xxxx" /></label>
-      <label>Region
-        <select id="region">
-          <option value="">-- Select region --</option>
-          <option>GRA</option>
-          <option>SBG</option>
-          <option>BHS</option>
+      <label>
+        <span class="required">Provisioning Path</span>
+        <select id="pathSelect">
+          <option value="mks">Hosted OVH MKS (Managed Kubernetes)</option>
+          <option value="nodes">OVH Nodes + RKE2/K3s (Self-Managed)</option>
         </select>
       </label>
-    </fieldset>
+      <div class="field-help">Select how you want to provision your Kubernetes cluster</div>
 
-    <fieldset id="mksFields">
-      <legend>Hosted OVH MKS Required</legend>
-      <label>Kubernetes Version
-        <select id="mksVersion">
-          <option value="">-- Select version --</option>
-          <option>1.30</option>
-          <option>1.31</option>
-        </select>
-      </label>
-      <label>Node Pool Flavor
-        <select id="mksFlavor">
-          <option value="">-- Select flavor --</option>
-          <option>b2-7</option>
-          <option>b2-15</option>
-        </select>
-      </label>
-    </fieldset>
+      <fieldset id="commonFields">
+        <legend>Project Configuration</legend>
+        
+        <label>
+          <span class="required">OVH Project ID</span>
+          <input id="projectId" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" pattern="[a-f0-9]{32}" />
+        </label>
+        <div class="field-help">32-character hexadecimal ID from OVH Control Panel → Public Cloud → Project Settings</div>
+        
+        <label>
+          <span class="required">Region</span>
+          <select id="region">
+            <option value="">-- Select region --</option>
+            <option value="GRA">GRA (Gravelines, France)</option>
+            <option value="SBG">SBG (Strasbourg, France)</option>
+            <option value="BHS">BHS (Beauharnois, Canada)</option>
+            <option value="UK1">UK1 (United Kingdom)</option>
+            <option value="DE1">DE1 (Frankfurt, Germany)</option>
+            <option value="WAW">WAW (Warsaw, Poland)</option>
+            <option value="SGP">SGP (Singapore)</option>
+            <option value="SYD">SYD (Sydney, Australia)</option>
+          </select>
+        </label>
+        <div class="field-help">Geographic region for your instance deployment - choose closest to your users</div>
 
-    <fieldset id="nodeFields" class="hidden">
-      <legend>OVH Nodes + RKE2/K3s Required</legend>
-      <label>Distro
-        <select id="distro">
-          <option value="">-- Select distro --</option>
-          <option>RKE2</option>
-          <option>K3s</option>
-        </select>
-      </label>
-      <label>Node Flavor
-        <select id="nodeFlavor">
-          <option value="">-- Select flavor --</option>
-          <option>b2-7</option>
-          <option>b2-15</option>
-          <option>c2-30</option>
-        </select>
-      </label>
-      <label>Image
-        <select id="image">
-          <option value="">-- Select image --</option>
-          <option>Ubuntu 22.04</option>
-          <option>Ubuntu 24.04</option>
-        </select>
-      </label>
-    </fieldset>
+        <label>
+          <span class="required">SSH Key</span>
+          <select id="sshKey">
+            <option value="">-- Select SSH key --</option>
+            <option value="my-key-1">my-laptop-key</option>
+            <option value="my-key-2">production-key</option>
+            <option value="my-key-3">dev-team-key</option>
+          </select>
+        </label>
+        <div class="field-help">SSH key for instance access - must be registered in your OVH project first</div>
+      </fieldset>
 
-    <button id="validateBtn" type="button">Validate form</button>
-    <p id="result"></p>
+      <fieldset id="mksFields">
+        <legend>Hosted OVH MKS Configuration</legend>
+        
+        <label>
+          <span class="required">Kubernetes Version</span>
+          <select id="mksVersion">
+            <option value="">-- Select version --</option>
+            <option value="1.30">1.30 (Stable)</option>
+            <option value="1.31">1.31 (Latest)</option>
+          </select>
+        </label>
+        <div class="field-help">Managed Kubernetes version - newer versions get latest features but may have compatibility issues</div>
+        
+        <label>
+          <span class="required">Node Pool Flavor</span>
+          <select id="mksFlavor">
+            <option value="">-- Select flavor --</option>
+            <option value="b2-7">b2-7 (2 vCPU, 7GB RAM) - General Purpose</option>
+            <option value="b2-15">b2-15 (4 vCPU, 15GB RAM) - General Purpose</option>
+            <option value="b2-30">b2-30 (8 vCPU, 30GB RAM) - General Purpose</option>
+          </select>
+        </label>
+        <div class="field-help">Instance size for MKS node pool - pricing varies by flavor</div>
+      </fieldset>
 
-    <h2>Fallback static options</h2>
-    <p>Current options are bundled statically in this page for sprint validation.</p>
+      <fieldset id="nodeFields" class="hidden">
+        <legend>Self-Managed Cluster Configuration</legend>
+        
+        <label>
+          <span class="required">Kubernetes Distribution</span>
+          <select id="distro">
+            <option value="">-- Select distro --</option>
+            <option value="rke2">RKE2 (Rancher Kubernetes Engine v2)</option>
+            <option value="k3s">K3s (Lightweight Kubernetes)</option>
+          </select>
+        </label>
+        <div class="field-help">RKE2 for production clusters, K3s for edge/IoT/development</div>
+        
+        <label>
+          <span class="required">Node Flavor</span>
+          <select id="nodeFlavor">
+            <option value="">-- Select flavor --</option>
+            <option value="b2-7">b2-7 (2 vCPU, 7GB RAM) - General Purpose</option>
+            <option value="b2-15">b2-15 (4 vCPU, 15GB RAM) - General Purpose</option>
+            <option value="b2-30">b2-30 (8 vCPU, 30GB RAM) - General Purpose</option>
+            <option value="c2-15">c2-15 (4 vCPU, 15GB RAM) - Compute Optimized</option>
+            <option value="c2-30">c2-30 (8 vCPU, 30GB RAM) - Compute Optimized</option>
+            <option value="r2-15">r2-15 (2 vCPU, 15GB RAM) - Memory Optimized</option>
+            <option value="r2-30">r2-30 (4 vCPU, 30GB RAM) - Memory Optimized</option>
+          </select>
+        </label>
+        <div class="field-help">Instance size for cluster nodes - choose based on workload requirements</div>
+        
+        <label>
+          <span class="required">Operating System Image</span>
+          <select id="image">
+            <option value="">-- Select image --</option>
+            <option value="ubuntu-24.04">Ubuntu 24.04 LTS</option>
+            <option value="ubuntu-22.04">Ubuntu 22.04 LTS (Recommended)</option>
+            <option value="ubuntu-20.04">Ubuntu 20.04 LTS</option>
+            <option value="debian-12">Debian 12</option>
+            <option value="debian-11">Debian 11</option>
+            <option value="rocky-9">Rocky Linux 9</option>
+          </select>
+        </label>
+        <div class="field-help">Base OS image - ensure compatibility with your Kubernetes distribution</div>
+      </fieldset>
+
+      <fieldset id="billingFields">
+        <legend>Billing & Optional Settings</legend>
+        
+        <label>
+          <span class="required">Billing Period</span>
+          <select id="billingPeriod">
+            <option value="hourly">Hourly - Pay as you go, stop anytime</option>
+            <option value="monthly">Monthly - Save ~30%, commitment required</option>
+          </select>
+        </label>
+        <div class="field-help">Hourly for testing/temporary workloads, Monthly for 24/7 production (saves ~30%)</div>
+        <div id="billingWarning" class="billing-info hidden">
+          ⚠️ <strong>Monthly billing:</strong> You'll be charged for the full month even if you delete the instance early.
+        </div>
+
+        <label>
+          Additional Disk Size (GB)
+          <input id="diskSize" type="number" placeholder="0" min="0" max="10000" />
+        </label>
+        <div class="field-help">Optional additional block storage (0-10000 GB) - leave blank for flavor's default storage</div>
+
+        <label>
+          Instance Name
+          <input id="instanceName" placeholder="my-k8s-node-1" pattern="^[a-zA-Z0-9-]+$" />
+        </label>
+        <div class="field-help">Optional custom name - auto-generated if not provided (letters, numbers, hyphens only)</div>
+      </fieldset>
+
+      <button id="validateBtn" type="button">✓ Validate Configuration</button>
+      <div id="result"></div>
+
+      <fieldset style="margin-top: 2rem; border-color: #123F6D;">
+        <legend>About This Prototype</legend>
+        <p><strong>Version:</strong> 1.1.0 (Sneederco Enhanced)</p>
+        <p><strong>Features:</strong></p>
+        <ul>
+          <li>✅ Dynamic dropdown support (with static fallbacks)</li>
+          <li>✅ Billing period selector with cost warnings</li>
+          <li>✅ SSH key selection</li>
+          <li>✅ Project ID validation</li>
+          <li>✅ Enhanced tooltips and field descriptions</li>
+          <li>✅ Sneederco branding and styling</li>
+        </ul>
+        <p><strong>Note:</strong> Current options are bundled statically for sprint validation. Production version will fetch dynamic data from OVH API via backend driver.</p>
+      </fieldset>
+    </div>
 
     <script>
       const pathSelect = document.getElementById('pathSelect');
       const mksFields = document.getElementById('mksFields');
       const nodeFields = document.getElementById('nodeFields');
+      const billingPeriod = document.getElementById('billingPeriod');
+      const billingWarning = document.getElementById('billingWarning');
       const result = document.getElementById('result');
 
       function setPathVisibility() {
@@ -102,36 +305,118 @@
         nodeFields.classList.toggle('hidden', isMks);
       }
 
+      function updateBillingWarning() {
+        const isMonthly = billingPeriod.value === 'monthly';
+        billingWarning.classList.toggle('hidden', !isMonthly);
+      }
+
       function missing(id) {
-        return !document.getElementById(id).value.trim();
+        const el = document.getElementById(id);
+        return !el.value.trim();
+      }
+
+      function validateProjectId() {
+        const projectId = document.getElementById('projectId').value.trim();
+        const pattern = /^[a-f0-9]{32}$/;
+        return pattern.test(projectId);
+      }
+
+      function clearValidationStyles() {
+        document.querySelectorAll('input, select').forEach(el => {
+          el.classList.remove('invalid');
+        });
+      }
+
+      function markInvalid(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('invalid');
       }
 
       document.getElementById('validateBtn').addEventListener('click', () => {
+        clearValidationStyles();
         const errors = [];
-        if (missing('projectId')) errors.push('OVH Project ID is required');
-        if (missing('region')) errors.push('Region is required');
 
+        // Common fields
+        if (missing('projectId')) {
+          errors.push('OVH Project ID is required');
+          markInvalid('projectId');
+        } else if (!validateProjectId()) {
+          errors.push('Project ID must be a 32-character hexadecimal string');
+          markInvalid('projectId');
+        }
+
+        if (missing('region')) {
+          errors.push('Region is required');
+          markInvalid('region');
+        }
+
+        if (missing('sshKey')) {
+          errors.push('SSH key is required');
+          markInvalid('sshKey');
+        }
+
+        if (missing('billingPeriod')) {
+          errors.push('Billing period is required');
+          markInvalid('billingPeriod');
+        }
+
+        // Path-specific fields
         if (pathSelect.value === 'mks') {
-          if (missing('mksVersion')) errors.push('MKS version is required');
-          if (missing('mksFlavor')) errors.push('MKS node pool flavor is required');
+          if (missing('mksVersion')) {
+            errors.push('MKS Kubernetes version is required');
+            markInvalid('mksVersion');
+          }
+          if (missing('mksFlavor')) {
+            errors.push('MKS node pool flavor is required');
+            markInvalid('mksFlavor');
+          }
         } else {
-          if (missing('distro')) errors.push('Distro is required');
-          if (missing('nodeFlavor')) errors.push('Node flavor is required');
-          if (missing('image')) errors.push('Image is required');
+          if (missing('distro')) {
+            errors.push('Kubernetes distribution is required');
+            markInvalid('distro');
+          }
+          if (missing('nodeFlavor')) {
+            errors.push('Node flavor is required');
+            markInvalid('nodeFlavor');
+          }
+          if (missing('image')) {
+            errors.push('Operating system image is required');
+            markInvalid('image');
+          }
+        }
+
+        // Optional field validation
+        const diskSize = document.getElementById('diskSize').value;
+        if (diskSize && (isNaN(diskSize) || diskSize < 0 || diskSize > 10000)) {
+          errors.push('Disk size must be between 0 and 10000 GB');
+          markInvalid('diskSize');
+        }
+
+        const instanceName = document.getElementById('instanceName').value.trim();
+        if (instanceName && !/^[a-zA-Z0-9-]+$/.test(instanceName)) {
+          errors.push('Instance name can only contain letters, numbers, and hyphens');
+          markInvalid('instanceName');
         }
 
         if (errors.length) {
           result.className = 'error';
-          result.textContent = 'Validation failed: ' + errors.join('; ');
+          result.innerHTML = '<strong>❌ Validation failed:</strong><br>' + errors.map(e => '• ' + e).join('<br>');
           return;
         }
 
         result.className = 'ok';
-        result.textContent = 'Validation passed for path: ' + pathSelect.value;
+        result.innerHTML = `<strong>✅ Validation passed!</strong><br>
+          Path: <code>${pathSelect.value}</code><br>
+          Project: <code>${document.getElementById('projectId').value}</code><br>
+          Region: <code>${document.getElementById('region').value}</code><br>
+          Billing: <code>${billingPeriod.value}</code>`;
       });
 
       pathSelect.addEventListener('change', setPathVisibility);
+      billingPeriod.addEventListener('change', updateBillingWarning);
+      
       setPathVisibility();
+      updateBillingWarning();
     </script>
   </body>
 </html>

@@ -1,57 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://sneederco.github.io/ui-driver-ovh/ovh-create-node-schema.json",
-  "title": "OVH Create Cluster Form",
+  "title": "OVH Node Template Form (Sneederco)",
+  "description": "Schema for creating OVH cloud instances via Rancher with Sneederco optimizations",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "provisioningMode"
+    "projectId",
+    "region",
+    "flavor",
+    "image",
+    "sshKey",
+    "billingPeriod"
   ],
   "properties": {
-    "provisioningMode": {
+    "projectId": {
       "type": "string",
-      "enum": [
-        "hosted-mks",
-        "node-rke2-k3s"
-      ],
-      "x-validationMessage": "Provisioning mode is required."
-    },
-    "mksClusterName": {
-      "type": "string",
-      "minLength": 3,
-      "maxLength": 63,
-      "pattern": "^[a-zA-Z0-9-]+$",
-      "x-validationMessage": "MKS cluster name must be 3-63 chars using letters, numbers, and dashes."
-    },
-    "mksRegion": {
-      "type": "string",
-      "minLength": 2,
-      "pattern": "^[A-Za-z0-9-]+$",
-      "not": {
-        "enum": [
-          "",
-          "select-region",
-          "default"
-        ]
-      },
-      "x-validationMessage": "MKS region is required and must be a valid OVH region code."
-    },
-    "mksVersion": {
-      "type": "string",
-      "pattern": "^[0-9]+\\.[0-9]+$",
-      "x-validationMessage": "MKS Kubernetes version is required (example: 1.30)."
-    },
-    "mksNodepoolFlavor": {
-      "type": "string",
-      "minLength": 2,
-      "pattern": "^[A-Za-z0-9.-]+$",
-      "x-validationMessage": "MKS node pool flavor is required and must be a valid flavor slug."
-    },
-    "mksNodepoolDesiredNodes": {
-      "type": "integer",
-      "minimum": 1,
-      "maximum": 100,
-      "x-validationMessage": "MKS node pool size must be between 1 and 100."
+      "minLength": 32,
+      "maxLength": 32,
+      "pattern": "^[a-f0-9]{32}$",
+      "x-validationMessage": "Project ID is required and must be a 32-character hexadecimal string (found in OVH Control Panel)."
     },
     "region": {
       "type": "string",
@@ -64,7 +32,7 @@
           "default"
         ]
       },
-      "x-validationMessage": "Region is required and must be a valid OVH region code."
+      "x-validationMessage": "Region is required and must be a valid OVH region code (e.g., GRA, SBG, BHS)."
     },
     "flavor": {
       "type": "string",
@@ -77,7 +45,7 @@
           "default"
         ]
       },
-      "x-validationMessage": "Flavor is required and must be a valid OVH flavor slug."
+      "x-validationMessage": "Flavor is required and must be a valid OVH flavor slug (e.g., b2-7, c2-15)."
     },
     "image": {
       "type": "string",
@@ -90,49 +58,44 @@
           "default"
         ]
       },
-      "x-validationMessage": "Image is required and must be a valid OVH image identifier."
+      "x-validationMessage": "Image is required and must be a valid OVH image identifier (e.g., ubuntu-22.04, debian-12)."
+    },
+    "sshKey": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "enum": [
+          "",
+          "select-key",
+          "default"
+        ]
+      },
+      "x-validationMessage": "SSH key is required. Register an SSH key in your OVH project if none are available."
+    },
+    "billingPeriod": {
+      "type": "string",
+      "enum": [
+        "hourly",
+        "monthly"
+      ],
+      "x-validationMessage": "Billing period must be 'hourly' or 'monthly'."
+    },
+    "diskSize": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10000,
+      "x-validationMessage": "Additional disk size must be between 0 and 10000 GB."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 63,
+      "pattern": "^[a-zA-Z0-9-]+$",
+      "x-validationMessage": "Instance name can only contain letters, numbers, and hyphens (max 63 characters)."
     }
   },
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "provisioningMode": {
-            "const": "hosted-mks"
-          }
-        },
-        "required": [
-          "provisioningMode"
-        ]
-      },
-      "then": {
-        "required": [
-          "mksClusterName",
-          "mksRegion",
-          "mksVersion",
-          "mksNodepoolFlavor",
-          "mksNodepoolDesiredNodes"
-        ]
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "provisioningMode": {
-            "const": "node-rke2-k3s"
-          }
-        },
-        "required": [
-          "provisioningMode"
-        ]
-      },
-      "then": {
-        "required": [
-          "region",
-          "flavor",
-          "image"
-        ]
-      }
-    }
-  ]
+  "x-branding": {
+    "organization": "Sneederco",
+    "support": "https://github.com/sneederco/docker-machine-driver-ovh"
+  }
 }

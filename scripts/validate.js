@@ -31,50 +31,22 @@ for (const name of ['mksRegion', 'mksVersion', 'mksNodepoolFlavor', 'region', 'f
   }
 }
 
-if (!Array.isArray(schema.allOf) || schema.allOf.length < 2) {
-  throw new Error('schema must include conditional allOf blocks for hosted and node paths');
-}
-
-const hostedRequired =
-  schema.allOf.find((entry) => entry?.if?.properties?.provisioningMode?.const === 'hosted-mks')?.then
-    ?.required || [];
-const nodeRequired =
-  schema.allOf.find((entry) => entry?.if?.properties?.provisioningMode?.const === 'node-rke2-k3s')?.then
-    ?.required || [];
-
-for (const key of hostedFields) {
-  if (!hostedRequired.includes(key)) throw new Error(`hosted required field missing in schema: ${key}`);
-}
-for (const key of nodeFields) {
-  if (!nodeRequired.includes(key)) throw new Error(`node required field missing in schema: ${key}`);
-}
-
-const validHosted = {
-  provisioningMode: 'hosted-mks',
-  mksClusterName: 'prod-mks-cluster',
-  mksRegion: 'GRA',
-  mksVersion: '1.30',
-  mksNodepoolFlavor: 'b2-7',
-  mksNodepoolDesiredNodes: 3
-};
-
-const invalidHosted = {
-  provisioningMode: 'hosted-mks',
-  mksClusterName: 'prod-mks-cluster',
-  mksRegion: 'GRA'
-};
-
-const validNode = {
-  provisioningMode: 'node-rke2-k3s',
+const valid = {
+  projectId: 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6',
   region: 'GRA',
   flavor: 'b2-7',
-  image: 'ubuntu-22.04'
+  image: 'ubuntu-22.04',
+  sshKey: 'my-ssh-key',
+  billingPeriod: 'hourly'
 };
 
-const invalidNode = {
-  provisioningMode: 'node-rke2-k3s',
-  region: 'GRA',
-  flavor: 'default'
+const invalid = {
+  projectId: 'invalid',
+  region: '',
+  flavor: 'default',
+  image: 'select-image',
+  sshKey: '',
+  billingPeriod: 'invalid'
 };
 
 function includesAll(required, payload) {

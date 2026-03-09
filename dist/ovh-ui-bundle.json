@@ -2,142 +2,26 @@
   "ovh-ui-config.json": {
     "driver": "ovh",
     "version": "1.1.0",
-    "displayName": "OVHcloud",
+    "displayName": "OVHcloud (Sneederco)",
+    "description": "Provision OVHcloud instances with Sneederco optimizations",
+    "brandColor": "#123F6D",
     "fields": [
       {
-        "name": "provisioningMode",
-        "type": "select",
-        "label": "Provisioning Mode",
-        "required": true,
-        "fallbackOptions": [
-          {
-            "label": "Hosted OVH Managed Kubernetes (MKS)",
-            "value": "hosted-mks"
-          },
-          {
-            "label": "OVH nodes + RKE2/K3s",
-            "value": "node-rke2-k3s"
-          }
-        ],
-        "validationMessage": "Choose Hosted MKS or Node provisioning before continuing."
-      },
-      {
-        "name": "mksClusterName",
+        "name": "projectId",
         "type": "text",
-        "label": "MKS Cluster Name",
-        "requiredWhen": {
-          "provisioningMode": "hosted-mks"
-        },
-        "placeholder": "prod-mks-cluster",
-        "validationMessage": "Cluster name is required for hosted MKS and must be 3-63 chars (letters, numbers, dashes)."
-      },
-      {
-        "name": "mksRegion",
-        "type": "select",
-        "label": "MKS Region",
-        "requiredWhen": {
-          "provisioningMode": "hosted-mks"
-        },
-        "optionSource": {
-          "type": "api",
-          "endpoint": "/v1/ovh/mks/regions",
-          "labelKey": "name",
-          "valueKey": "id"
-        },
-        "fallbackOptions": [
-          {
-            "label": "GRA (Gravelines)",
-            "value": "GRA"
-          },
-          {
-            "label": "SBG (Strasbourg)",
-            "value": "SBG"
-          },
-          {
-            "label": "BHS (Beauharnois)",
-            "value": "BHS"
-          }
-        ],
-        "validationMessage": "Hosted MKS requires a valid region."
-      },
-      {
-        "name": "mksVersion",
-        "type": "select",
-        "label": "Kubernetes Version",
-        "requiredWhen": {
-          "provisioningMode": "hosted-mks"
-        },
-        "optionSource": {
-          "type": "api",
-          "endpoint": "/v1/ovh/mks/versions?region={{mksRegion}}",
-          "labelKey": "version",
-          "valueKey": "version"
-        },
-        "fallbackOptions": [
-          {
-            "label": "v1.30",
-            "value": "1.30"
-          },
-          {
-            "label": "v1.29",
-            "value": "1.29"
-          }
-        ],
-        "dependsOn": [
-          "mksRegion"
-        ],
-        "validationMessage": "Hosted MKS requires a supported Kubernetes version."
-      },
-      {
-        "name": "mksNodepoolFlavor",
-        "type": "select",
-        "label": "Default Node Pool SKU",
-        "requiredWhen": {
-          "provisioningMode": "hosted-mks"
-        },
-        "optionSource": {
-          "type": "api",
-          "endpoint": "/v1/ovh/mks/skus?region={{mksRegion}}",
-          "labelKey": "displayName",
-          "valueKey": "sku"
-        },
-        "fallbackOptions": [
-          {
-            "label": "b2-7 (General Purpose)",
-            "value": "b2-7"
-          },
-          {
-            "label": "c2-15 (Compute Optimized)",
-            "value": "c2-15"
-          },
-          {
-            "label": "r2-15 (Memory Optimized)",
-            "value": "r2-15"
-          }
-        ],
-        "dependsOn": [
-          "mksRegion"
-        ],
-        "validationMessage": "Hosted MKS requires a node pool SKU."
-      },
-      {
-        "name": "mksNodepoolDesiredNodes",
-        "type": "number",
-        "label": "Default Node Pool Size",
-        "requiredWhen": {
-          "provisioningMode": "hosted-mks"
-        },
-        "min": 1,
-        "max": 100,
-        "validationMessage": "Hosted MKS requires a node count between 1 and 100."
+        "label": "OVH Project ID",
+        "required": true,
+        "placeholder": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "tooltip": "Your OVH Public Cloud project ID. Find this in the OVH Control Panel under Public Cloud > Project Settings.",
+        "pattern": "^[a-f0-9]{32}$",
+        "validationMessage": "Project ID is required and must be a 32-character hexadecimal string."
       },
       {
         "name": "region",
         "type": "select",
         "label": "OVH Region",
-        "requiredWhen": {
-          "provisioningMode": "node-rke2-k3s"
-        },
+        "required": true,
+        "tooltip": "Geographic region where your instance will be deployed. Choose the region closest to your users for lower latency.",
         "optionSource": {
           "type": "api",
           "endpoint": "/v1/ovh/regions",
@@ -146,16 +30,36 @@
         },
         "fallbackOptions": [
           {
-            "label": "GRA (Gravelines)",
+            "label": "GRA (Gravelines, France)",
             "value": "GRA"
           },
           {
-            "label": "SBG (Strasbourg)",
+            "label": "SBG (Strasbourg, France)",
             "value": "SBG"
           },
           {
-            "label": "BHS (Beauharnois)",
+            "label": "BHS (Beauharnois, Canada)",
             "value": "BHS"
+          },
+          {
+            "label": "UK1 (United Kingdom)",
+            "value": "UK1"
+          },
+          {
+            "label": "DE1 (Frankfurt, Germany)",
+            "value": "DE1"
+          },
+          {
+            "label": "WAW (Warsaw, Poland)",
+            "value": "WAW"
+          },
+          {
+            "label": "SGP (Singapore)",
+            "value": "SGP"
+          },
+          {
+            "label": "SYD (Sydney, Australia)",
+            "value": "SYD"
           }
         ],
         "validationMessage": "Region is required for node provisioning."
@@ -164,9 +68,8 @@
         "name": "flavor",
         "type": "select",
         "label": "Instance Flavor",
-        "requiredWhen": {
-          "provisioningMode": "node-rke2-k3s"
-        },
+        "required": true,
+        "tooltip": "Instance type defining CPU, RAM, and disk resources. Pricing varies by flavor and billing period.",
         "optionSource": {
           "type": "api",
           "endpoint": "/v1/ovh/flavors?region={{region}}",
@@ -175,16 +78,36 @@
         },
         "fallbackOptions": [
           {
-            "label": "b2-7 (General Purpose)",
+            "label": "b2-7 (2 vCPU, 7GB RAM) - General Purpose",
             "value": "b2-7"
           },
           {
-            "label": "c2-15 (Compute Optimized)",
+            "label": "b2-15 (4 vCPU, 15GB RAM) - General Purpose",
+            "value": "b2-15"
+          },
+          {
+            "label": "b2-30 (8 vCPU, 30GB RAM) - General Purpose",
+            "value": "b2-30"
+          },
+          {
+            "label": "c2-7 (2 vCPU, 7GB RAM) - Compute Optimized",
+            "value": "c2-7"
+          },
+          {
+            "label": "c2-15 (4 vCPU, 15GB RAM) - Compute Optimized",
             "value": "c2-15"
           },
           {
-            "label": "r2-15 (Memory Optimized)",
+            "label": "c2-30 (8 vCPU, 30GB RAM) - Compute Optimized",
+            "value": "c2-30"
+          },
+          {
+            "label": "r2-15 (2 vCPU, 15GB RAM) - Memory Optimized",
             "value": "r2-15"
+          },
+          {
+            "label": "r2-30 (4 vCPU, 30GB RAM) - Memory Optimized",
+            "value": "r2-30"
           }
         ],
         "dependsOn": [
@@ -196,9 +119,8 @@
         "name": "image",
         "type": "select",
         "label": "Image",
-        "requiredWhen": {
-          "provisioningMode": "node-rke2-k3s"
-        },
+        "required": true,
+        "tooltip": "Operating system image for your instance. Ensure compatibility with your applications and region/flavor.",
         "optionSource": {
           "type": "api",
           "endpoint": "/v1/ovh/images?region={{region}}",
@@ -207,79 +129,165 @@
         },
         "fallbackOptions": [
           {
-            "label": "Ubuntu 22.04",
+            "label": "Ubuntu 24.04 LTS",
+            "value": "ubuntu-24.04"
+          },
+          {
+            "label": "Ubuntu 22.04 LTS",
             "value": "ubuntu-22.04"
+          },
+          {
+            "label": "Ubuntu 20.04 LTS",
+            "value": "ubuntu-20.04"
           },
           {
             "label": "Debian 12",
             "value": "debian-12"
           },
           {
+            "label": "Debian 11",
+            "value": "debian-11"
+          },
+          {
             "label": "Rocky Linux 9",
             "value": "rocky-9"
+          },
+          {
+            "label": "AlmaLinux 9",
+            "value": "alma-9"
           }
         ],
         "dependsOn": [
           "region"
         ],
-        "validationMessage": "Image is required for node provisioning."
+        "validationMessage": "Image is required. Select a boot image compatible with the region/flavor."
+      },
+      {
+        "name": "sshKey",
+        "type": "select",
+        "label": "SSH Key",
+        "required": true,
+        "tooltip": "SSH key for accessing the instance. The key must be registered in your OVH project first.",
+        "optionSource": {
+          "type": "api",
+          "endpoint": "/v1/ovh/ssh-keys?projectId={{projectId}}&region={{region}}",
+          "labelKey": "name",
+          "valueKey": "id"
+        },
+        "fallbackOptions": [
+          {
+            "label": "No SSH keys available - Add one in OVH Control Panel",
+            "value": "",
+            "disabled": true
+          }
+        ],
+        "dependsOn": [
+          "projectId",
+          "region"
+        ],
+        "validationMessage": "SSH key is required. Register an SSH key in your OVH project if none are available."
+      },
+      {
+        "name": "billingPeriod",
+        "type": "select",
+        "label": "Billing Period",
+        "required": true,
+        "tooltip": "Hourly billing offers flexibility (pay-as-you-go). Monthly billing provides ~30% cost savings for long-running instances.",
+        "defaultValue": "hourly",
+        "options": [
+          {
+            "label": "Hourly - Pay as you go, stop anytime",
+            "value": "hourly",
+            "info": "Best for testing, temporary workloads, or uncertain durations"
+          },
+          {
+            "label": "Monthly - Save ~30%, commitment required",
+            "value": "monthly",
+            "info": "Best for production workloads running 24/7. Billed for full month even if deleted early."
+          }
+        ],
+        "validationMessage": "Billing period is required. Choose hourly or monthly."
+      },
+      {
+        "name": "diskSize",
+        "type": "number",
+        "label": "Additional Disk Size (GB)",
+        "required": false,
+        "tooltip": "Optional additional block storage volume in GB. Leave blank to use only the flavor's included storage.",
+        "placeholder": "0",
+        "min": 0,
+        "max": 10000,
+        "validationMessage": "Disk size must be between 0 and 10000 GB."
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "label": "Instance Name",
+        "required": false,
+        "tooltip": "Optional custom name for the instance. If not provided, a random name will be generated.",
+        "placeholder": "my-k8s-node-1",
+        "pattern": "^[a-zA-Z0-9-]+$",
+        "validationMessage": "Instance name can only contain letters, numbers, and hyphens."
       }
-    ]
+    ],
+    "sections": [
+      {
+        "title": "Project Configuration",
+        "description": "Configure your OVH Public Cloud project settings",
+        "fields": [
+          "projectId",
+          "region"
+        ]
+      },
+      {
+        "title": "Instance Specification",
+        "description": "Define the instance size, image, and access",
+        "fields": [
+          "flavor",
+          "image",
+          "sshKey"
+        ]
+      },
+      {
+        "title": "Billing & Options",
+        "description": "Configure billing and optional settings",
+        "fields": [
+          "billingPeriod",
+          "diskSize",
+          "name"
+        ]
+      }
+    ],
+    "branding": {
+      "organization": "Sneederco",
+      "primaryColor": "#123F6D",
+      "secondaryColor": "#0078D7",
+      "logoUrl": "https://www.ovhcloud.com/themes/custom/ovh/images/logo/ovhcloud_logo.svg",
+      "supportUrl": "https://github.com/sneederco/docker-machine-driver-ovh"
+    }
   },
   "ovh-create-node-schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://sneederco.github.io/ui-driver-ovh/ovh-create-node-schema.json",
-    "title": "OVH Create Cluster Form",
+    "title": "OVH Node Template Form (Sneederco)",
+    "description": "Schema for creating OVH cloud instances via Rancher with Sneederco optimizations",
     "type": "object",
     "additionalProperties": false,
     "required": [
-      "provisioningMode"
+      "projectId",
+      "region",
+      "flavor",
+      "image",
+      "sshKey",
+      "billingPeriod"
     ],
     "properties": {
-      "provisioningMode": {
+      "projectId": {
         "type": "string",
-        "enum": [
-          "hosted-mks",
-          "node-rke2-k3s"
-        ],
-        "x-validationMessage": "Provisioning mode is required."
-      },
-      "mksClusterName": {
-        "type": "string",
-        "minLength": 3,
-        "maxLength": 63,
-        "pattern": "^[a-zA-Z0-9-]+$",
-        "x-validationMessage": "MKS cluster name must be 3-63 chars using letters, numbers, and dashes."
-      },
-      "mksRegion": {
-        "type": "string",
-        "minLength": 2,
-        "pattern": "^[A-Za-z0-9-]+$",
-        "not": {
-          "enum": [
-            "",
-            "select-region",
-            "default"
-          ]
-        },
-        "x-validationMessage": "MKS region is required and must be a valid OVH region code."
-      },
-      "mksVersion": {
-        "type": "string",
-        "pattern": "^[0-9]+\\.[0-9]+$",
-        "x-validationMessage": "MKS Kubernetes version is required (example: 1.30)."
-      },
-      "mksNodepoolFlavor": {
-        "type": "string",
-        "minLength": 2,
-        "pattern": "^[A-Za-z0-9.-]+$",
-        "x-validationMessage": "MKS node pool flavor is required and must be a valid flavor slug."
-      },
-      "mksNodepoolDesiredNodes": {
-        "type": "integer",
-        "minimum": 1,
-        "maximum": 100,
-        "x-validationMessage": "MKS node pool size must be between 1 and 100."
+        "minLength": 32,
+        "maxLength": 32,
+        "pattern": "^[a-f0-9]{32}$",
+        "x-validationMessage": "Project ID is required and must be a 32-character hexadecimal string (found in OVH Control Panel)."
       },
       "region": {
         "type": "string",
@@ -292,7 +300,7 @@
             "default"
           ]
         },
-        "x-validationMessage": "Region is required and must be a valid OVH region code."
+        "x-validationMessage": "Region is required and must be a valid OVH region code (e.g., GRA, SBG, BHS)."
       },
       "flavor": {
         "type": "string",
@@ -305,7 +313,7 @@
             "default"
           ]
         },
-        "x-validationMessage": "Flavor is required and must be a valid OVH flavor slug."
+        "x-validationMessage": "Flavor is required and must be a valid OVH flavor slug (e.g., b2-7, c2-15)."
       },
       "image": {
         "type": "string",
@@ -318,51 +326,46 @@
             "default"
           ]
         },
-        "x-validationMessage": "Image is required and must be a valid OVH image identifier."
+        "x-validationMessage": "Image is required and must be a valid OVH image identifier (e.g., ubuntu-22.04, debian-12)."
+      },
+      "sshKey": {
+        "type": "string",
+        "minLength": 1,
+        "not": {
+          "enum": [
+            "",
+            "select-key",
+            "default"
+          ]
+        },
+        "x-validationMessage": "SSH key is required. Register an SSH key in your OVH project if none are available."
+      },
+      "billingPeriod": {
+        "type": "string",
+        "enum": [
+          "hourly",
+          "monthly"
+        ],
+        "x-validationMessage": "Billing period must be 'hourly' or 'monthly'."
+      },
+      "diskSize": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 10000,
+        "x-validationMessage": "Additional disk size must be between 0 and 10000 GB."
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 63,
+        "pattern": "^[a-zA-Z0-9-]+$",
+        "x-validationMessage": "Instance name can only contain letters, numbers, and hyphens (max 63 characters)."
       }
     },
-    "allOf": [
-      {
-        "if": {
-          "properties": {
-            "provisioningMode": {
-              "const": "hosted-mks"
-            }
-          },
-          "required": [
-            "provisioningMode"
-          ]
-        },
-        "then": {
-          "required": [
-            "mksClusterName",
-            "mksRegion",
-            "mksVersion",
-            "mksNodepoolFlavor",
-            "mksNodepoolDesiredNodes"
-          ]
-        }
-      },
-      {
-        "if": {
-          "properties": {
-            "provisioningMode": {
-              "const": "node-rke2-k3s"
-            }
-          },
-          "required": [
-            "provisioningMode"
-          ]
-        },
-        "then": {
-          "required": [
-            "region",
-            "flavor",
-            "image"
-          ]
-        }
-      }
-    ]
+    "x-branding": {
+      "organization": "Sneederco",
+      "support": "https://github.com/sneederco/docker-machine-driver-ovh"
+    }
   },
   "field-definitions.sample.json": {
     "sampleFields": [

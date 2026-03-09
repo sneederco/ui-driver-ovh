@@ -4,14 +4,7 @@ const baseConfig = config(__dirname, {
   excludes: [],
 });
 
-// Override public path for plugin to work when loaded externally
-if (baseConfig.configureWebpack) {
-  const original = baseConfig.configureWebpack;
-  baseConfig.configureWebpack = (cfg) => {
-    original(cfg);
-    cfg.output = cfg.output || {};
-    cfg.output.publicPath = 'auto';
-  };
-}
+// Set explicit public path for GitHub Pages
+baseConfig.publicPath = 'https://sneederco.github.io/ui-driver-ovh/extensions/ovh-autoscaler/1.0.0/';
 
 module.exports = baseConfig;

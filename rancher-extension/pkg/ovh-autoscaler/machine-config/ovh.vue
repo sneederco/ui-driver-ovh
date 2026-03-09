@@ -1,24 +1,20 @@
 <script>
-import CreateEditView from '@shell/mixins/create-edit-view';
-
 const REGIONS = [
   { label: 'US East Virginia 1', value: 'US-EAST-VA-1' },
   { label: 'US West Oregon 1', value: 'US-WEST-OR-1' },
   { label: 'Germany (GRA7)', value: 'GRA7' },
   { label: 'France (SBG5)', value: 'SBG5' },
-  { label: 'UK (UK1)', value: 'UK1' },
 ];
 
 export default {
   name: 'OvhMachineConfig',
-  mixins: [CreateEditView],
   props: {
-    uuid: { type: String, required: true },
+    value: { type: Object, default: () => ({}) },
+    mode: { type: String, default: 'edit' },
     cluster: { type: Object, default: () => ({}) },
-    credentialId: { type: String, required: true },
+    credentialId: { type: String, default: '' },
     disabled: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
-    provider: { type: String, required: true },
     poolIndex: { type: Number, default: 0 }
   },
   data() {
@@ -91,7 +87,6 @@ export default {
         </select>
       </label>
     </div>
-
     <h3 style="margin-top:16px;">Cluster Autoscaler</h3>
     <label><input type="checkbox" v-model="enableAutoscaler" :disabled="disabled || busy" /> Enable Autoscaler</label>
     <div v-if="enableAutoscaler" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">

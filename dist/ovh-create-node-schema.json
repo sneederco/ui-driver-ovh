@@ -1,15 +1,26 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://sneederco.github.io/ui-driver-ovh/ovh-create-node-schema.json",
-  "title": "OVH Node Template Form",
+  "title": "OVH Node Template Form (Sneederco)",
+  "description": "Schema for creating OVH cloud instances via Rancher with Sneederco optimizations",
   "type": "object",
   "additionalProperties": false,
   "required": [
+    "projectId",
     "region",
     "flavor",
-    "image"
+    "image",
+    "sshKey",
+    "billingPeriod"
   ],
   "properties": {
+    "projectId": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "pattern": "^[a-f0-9]{32}$",
+      "x-validationMessage": "Project ID is required and must be a 32-character hexadecimal string (found in OVH Control Panel)."
+    },
     "region": {
       "type": "string",
       "minLength": 2,
@@ -21,7 +32,7 @@
           "default"
         ]
       },
-      "x-validationMessage": "Region is required and must be a valid OVH region code."
+      "x-validationMessage": "Region is required and must be a valid OVH region code (e.g., GRA, SBG, BHS)."
     },
     "flavor": {
       "type": "string",
@@ -34,7 +45,7 @@
           "default"
         ]
       },
-      "x-validationMessage": "Flavor is required and must be a valid OVH flavor slug."
+      "x-validationMessage": "Flavor is required and must be a valid OVH flavor slug (e.g., b2-7, c2-15)."
     },
     "image": {
       "type": "string",
@@ -47,7 +58,44 @@
           "default"
         ]
       },
-      "x-validationMessage": "Image is required and must be a valid OVH image identifier."
+      "x-validationMessage": "Image is required and must be a valid OVH image identifier (e.g., ubuntu-22.04, debian-12)."
+    },
+    "sshKey": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "enum": [
+          "",
+          "select-key",
+          "default"
+        ]
+      },
+      "x-validationMessage": "SSH key is required. Register an SSH key in your OVH project if none are available."
+    },
+    "billingPeriod": {
+      "type": "string",
+      "enum": [
+        "hourly",
+        "monthly"
+      ],
+      "x-validationMessage": "Billing period must be 'hourly' or 'monthly'."
+    },
+    "diskSize": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10000,
+      "x-validationMessage": "Additional disk size must be between 0 and 10000 GB."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 63,
+      "pattern": "^[a-zA-Z0-9-]+$",
+      "x-validationMessage": "Instance name can only contain letters, numbers, and hyphens (max 63 characters)."
     }
+  },
+  "x-branding": {
+    "organization": "Sneederco",
+    "support": "https://github.com/sneederco/docker-machine-driver-ovh"
   }
 }

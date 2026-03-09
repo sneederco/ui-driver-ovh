@@ -14,15 +14,21 @@ for (const name of expected) {
 }
 
 const valid = {
+  projectId: 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6',
   region: 'GRA',
   flavor: 'b2-7',
-  image: 'ubuntu-22.04'
+  image: 'ubuntu-22.04',
+  sshKey: 'my-ssh-key',
+  billingPeriod: 'hourly'
 };
 
 const invalid = {
+  projectId: 'invalid',
   region: '',
   flavor: 'default',
-  image: 'select-image'
+  image: 'select-image',
+  sshKey: '',
+  billingPeriod: 'invalid'
 };
 
 function validateRequired(payload) {

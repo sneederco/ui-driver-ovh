@@ -1,6 +1,5 @@
 ovh:
   machine:
-    title: OVHcloud Configuration
     region: Region
     flavorName: Flavor
     imageName: Image
@@ -10,5 +9,3 @@ ovh:
     enable: Enable Cluster Autoscaler
     minNodes: Minimum Nodes
     maxNodes: Maximum Nodes
-    description: Enable automatic scaling based on pod resource requests. Nodes will be added when pods are pending and removed when underutilized.
-    deployNotice: The autoscaler controller will automatically deploy cluster-autoscaler when the cluster becomes ready.

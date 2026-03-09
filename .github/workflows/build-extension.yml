@@ -19,11 +19,12 @@ jobs:
         with:
           node-version: '20'
           
+      - name: Install yarn
+        run: npm install -g yarn
+          
       - name: Install dependencies
         working-directory: rancher-extension
-        run: |
-          npm install -g yarn
-          yarn install
+        run: yarn install
           
       - name: Build extension
         working-directory: rancher-extension

@@ -1,14 +1,15 @@
 {
-  "name": "@sneederco/ovh-rancher-extension",
+  "name": "ovh-extension",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "API=$API yarn shell",
-    "shell": "@rancher/shell",
+    "dev": "API=$API ./node_modules/.bin/rancher-shell",
     "build-pkg": "./node_modules/@rancher/shell/scripts/build-pkg.sh",
     "serve-pkgs": "./node_modules/@rancher/shell/scripts/serve-pkgs.sh"
   },
   "dependencies": {
-    "@rancher/shell": "^3.0.0"
+    "@rancher/shell": "3.0.8-rc.13",
+    "cache-loader": "^4.1.0",
+    "node-polyfill-webpack-plugin": "^3.0.0"
   }
 }

@@ -1,8 +1,8 @@
 {
   "driver": "ovh",
-  "version": "1.2.0",
+  "version": "1.1.0",
   "displayName": "OVHcloud (Sneederco)",
-  "description": "Provision OVHcloud instances with Sneederco optimizations and autoscaling",
+  "description": "Provision OVHcloud instances with Sneederco optimizations",
   "brandColor": "#123F6D",
   "fields": [
     {
@@ -28,16 +28,38 @@
         "valueKey": "id"
       },
       "fallbackOptions": [
-        { "label": "US-EAST-VA-1 (Virginia, USA)", "value": "US-EAST-VA-1" },
-        { "label": "US-WEST-OR-1 (Oregon, USA)", "value": "US-WEST-OR-1" },
-        { "label": "GRA (Gravelines, France)", "value": "GRA" },
-        { "label": "SBG (Strasbourg, France)", "value": "SBG" },
-        { "label": "BHS (Beauharnois, Canada)", "value": "BHS" },
-        { "label": "UK1 (United Kingdom)", "value": "UK1" },
-        { "label": "DE1 (Frankfurt, Germany)", "value": "DE1" },
-        { "label": "WAW (Warsaw, Poland)", "value": "WAW" },
-        { "label": "SGP (Singapore)", "value": "SGP" },
-        { "label": "SYD (Sydney, Australia)", "value": "SYD" }
+        {
+          "label": "GRA (Gravelines, France)",
+          "value": "GRA"
+        },
+        {
+          "label": "SBG (Strasbourg, France)",
+          "value": "SBG"
+        },
+        {
+          "label": "BHS (Beauharnois, Canada)",
+          "value": "BHS"
+        },
+        {
+          "label": "UK1 (United Kingdom)",
+          "value": "UK1"
+        },
+        {
+          "label": "DE1 (Frankfurt, Germany)",
+          "value": "DE1"
+        },
+        {
+          "label": "WAW (Warsaw, Poland)",
+          "value": "WAW"
+        },
+        {
+          "label": "SGP (Singapore)",
+          "value": "SGP"
+        },
+        {
+          "label": "SYD (Sydney, Australia)",
+          "value": "SYD"
+        }
       ],
       "validationMessage": "Region is required for node provisioning."
     },
@@ -54,18 +76,42 @@
         "valueKey": "id"
       },
       "fallbackOptions": [
-        { "label": "b3-8 (2 vCPU, 8GB RAM) - General Purpose", "value": "b3-8" },
-        { "label": "b3-16 (4 vCPU, 16GB RAM) - General Purpose", "value": "b3-16" },
-        { "label": "b3-32 (8 vCPU, 32GB RAM) - General Purpose", "value": "b3-32" },
-        { "label": "b2-7 (2 vCPU, 7GB RAM) - General Purpose", "value": "b2-7" },
-        { "label": "b2-15 (4 vCPU, 15GB RAM) - General Purpose", "value": "b2-15" },
-        { "label": "b2-30 (8 vCPU, 30GB RAM) - General Purpose", "value": "b2-30" },
-        { "label": "c2-7 (2 vCPU, 7GB RAM) - Compute Optimized", "value": "c2-7" },
-        { "label": "c2-15 (4 vCPU, 15GB RAM) - Compute Optimized", "value": "c2-15" },
-        { "label": "r2-15 (2 vCPU, 15GB RAM) - Memory Optimized", "value": "r2-15" },
-        { "label": "r2-30 (4 vCPU, 30GB RAM) - Memory Optimized", "value": "r2-30" }
+        {
+          "label": "b2-7 (2 vCPU, 7GB RAM) - General Purpose",
+          "value": "b2-7"
+        },
+        {
+          "label": "b2-15 (4 vCPU, 15GB RAM) - General Purpose",
+          "value": "b2-15"
+        },
+        {
+          "label": "b2-30 (8 vCPU, 30GB RAM) - General Purpose",
+          "value": "b2-30"
+        },
+        {
+          "label": "c2-7 (2 vCPU, 7GB RAM) - Compute Optimized",
+          "value": "c2-7"
+        },
+        {
+          "label": "c2-15 (4 vCPU, 15GB RAM) - Compute Optimized",
+          "value": "c2-15"
+        },
+        {
+          "label": "c2-30 (8 vCPU, 30GB RAM) - Compute Optimized",
+          "value": "c2-30"
+        },
+        {
+          "label": "r2-15 (2 vCPU, 15GB RAM) - Memory Optimized",
+          "value": "r2-15"
+        },
+        {
+          "label": "r2-30 (4 vCPU, 30GB RAM) - Memory Optimized",
+          "value": "r2-30"
+        }
       ],
-      "dependsOn": ["region"],
+      "dependsOn": [
+        "region"
+      ],
       "validationMessage": "Flavor is required for node provisioning."
     },
     {
@@ -81,23 +127,46 @@
         "valueKey": "id"
       },
       "fallbackOptions": [
-        { "label": "Ubuntu 24.04 LTS", "value": "Ubuntu 24.04" },
-        { "label": "Ubuntu 22.04 LTS", "value": "Ubuntu 22.04" },
-        { "label": "Ubuntu 20.04 LTS", "value": "Ubuntu 20.04" },
-        { "label": "Debian 12", "value": "Debian 12" },
-        { "label": "Debian 11", "value": "Debian 11" },
-        { "label": "Rocky Linux 9", "value": "Rocky Linux 9" },
-        { "label": "AlmaLinux 9", "value": "AlmaLinux 9" }
+        {
+          "label": "Ubuntu 24.04 LTS",
+          "value": "ubuntu-24.04"
+        },
+        {
+          "label": "Ubuntu 22.04 LTS",
+          "value": "ubuntu-22.04"
+        },
+        {
+          "label": "Ubuntu 20.04 LTS",
+          "value": "ubuntu-20.04"
+        },
+        {
+          "label": "Debian 12",
+          "value": "debian-12"
+        },
+        {
+          "label": "Debian 11",
+          "value": "debian-11"
+        },
+        {
+          "label": "Rocky Linux 9",
+          "value": "rocky-9"
+        },
+        {
+          "label": "AlmaLinux 9",
+          "value": "alma-9"
+        }
       ],
-      "dependsOn": ["region"],
+      "dependsOn": [
+        "region"
+      ],
       "validationMessage": "Image is required. Select a boot image compatible with the region/flavor."
     },
     {
       "name": "sshKey",
       "type": "select",
       "label": "SSH Key",
-      "required": false,
-      "tooltip": "SSH key for accessing the instance. If not specified, Rancher will generate and manage one.",
+      "required": true,
+      "tooltip": "SSH key for accessing the instance. The key must be registered in your OVH project first.",
       "optionSource": {
         "type": "api",
         "endpoint": "/v1/ovh/ssh-keys?projectId={{projectId}}&region={{region}}",
@@ -105,10 +174,17 @@
         "valueKey": "id"
       },
       "fallbackOptions": [
-        { "label": "(Auto-generate)", "value": "" }
+        {
+          "label": "No SSH keys available - Add one in OVH Control Panel",
+          "value": "",
+          "disabled": true
+        }
       ],
-      "dependsOn": ["projectId", "region"],
-      "validationMessage": "Select an SSH key or leave blank for auto-generation."
+      "dependsOn": [
+        "projectId",
+        "region"
+      ],
+      "validationMessage": "SSH key is required. Register an SSH key in your OVH project if none are available."
     },
     {
       "name": "billingPeriod",
@@ -118,44 +194,18 @@
       "tooltip": "Hourly billing offers flexibility (pay-as-you-go). Monthly billing provides ~30% cost savings for long-running instances.",
       "defaultValue": "hourly",
       "options": [
-        { "label": "Hourly - Pay as you go, stop anytime", "value": "hourly" },
-        { "label": "Monthly - Save ~30%, commitment required", "value": "monthly" }
+        {
+          "label": "Hourly - Pay as you go, stop anytime",
+          "value": "hourly",
+          "info": "Best for testing, temporary workloads, or uncertain durations"
+        },
+        {
+          "label": "Monthly - Save ~30%, commitment required",
+          "value": "monthly",
+          "info": "Best for production workloads running 24/7. Billed for full month even if deleted early."
+        }
       ],
       "validationMessage": "Billing period is required. Choose hourly or monthly."
-    },
-    {
-      "name": "enableAutoscaler",
-      "type": "checkbox",
-      "label": "Enable Cluster Autoscaler",
-      "required": false,
-      "defaultValue": false,
-      "tooltip": "Automatically scale nodes based on pod scheduling demand. Deploys the Kubernetes Cluster Autoscaler with Rancher integration."
-    },
-    {
-      "name": "autoscalerMinSize",
-      "type": "number",
-      "label": "Minimum Nodes",
-      "required": false,
-      "defaultValue": 1,
-      "min": 1,
-      "max": 100,
-      "tooltip": "Minimum number of nodes to maintain in this pool. Autoscaler will not scale below this number.",
-      "dependsOn": ["enableAutoscaler"],
-      "showIf": { "enableAutoscaler": true },
-      "validationMessage": "Minimum nodes must be at least 1."
-    },
-    {
-      "name": "autoscalerMaxSize",
-      "type": "number",
-      "label": "Maximum Nodes",
-      "required": false,
-      "defaultValue": 10,
-      "min": 1,
-      "max": 100,
-      "tooltip": "Maximum number of nodes the autoscaler can scale up to. Keep this reasonable to control costs.",
-      "dependsOn": ["enableAutoscaler"],
-      "showIf": { "enableAutoscaler": true },
-      "validationMessage": "Maximum nodes must be between 1 and 100."
     },
     {
       "name": "diskSize",
@@ -171,11 +221,11 @@
     {
       "name": "name",
       "type": "text",
-      "label": "Instance Name Prefix",
+      "label": "Instance Name",
       "required": false,
-      "tooltip": "Optional custom prefix for instance names. If not provided, a random name will be generated.",
-      "placeholder": "my-k8s-node",
-      "pattern": "^[a-zA-Z0-9-]*$",
+      "tooltip": "Optional custom name for the instance. If not provided, a random name will be generated.",
+      "placeholder": "my-k8s-node-1",
+      "pattern": "^[a-zA-Z0-9-]+$",
       "validationMessage": "Instance name can only contain letters, numbers, and hyphens."
     }
   ],
@@ -183,22 +233,28 @@
     {
       "title": "Project Configuration",
       "description": "Configure your OVH Public Cloud project settings",
-      "fields": ["projectId", "region"]
+      "fields": [
+        "projectId",
+        "region"
+      ]
     },
     {
       "title": "Instance Specification",
       "description": "Define the instance size, image, and access",
-      "fields": ["flavor", "image", "sshKey"]
-    },
-    {
-      "title": "Autoscaling",
-      "description": "Configure automatic node scaling based on workload demand",
-      "fields": ["enableAutoscaler", "autoscalerMinSize", "autoscalerMaxSize"]
+      "fields": [
+        "flavor",
+        "image",
+        "sshKey"
+      ]
     },
     {
       "title": "Billing & Options",
       "description": "Configure billing and optional settings",
-      "fields": ["billingPeriod", "diskSize", "name"]
+      "fields": [
+        "billingPeriod",
+        "diskSize",
+        "name"
+      ]
     }
   ],
   "branding": {
@@ -207,12 +263,5 @@
     "secondaryColor": "#0078D7",
     "logoUrl": "https://www.ovhcloud.com/themes/custom/ovh/images/logo/ovhcloud_logo.svg",
     "supportUrl": "https://github.com/sneederco/docker-machine-driver-ovh"
-  },
-  "autoscaler": {
-    "image": "registry.k8s.io/autoscaling/cluster-autoscaler:v1.31.0",
-    "cloudProvider": "rancher",
-    "scaleDownEnabled": true,
-    "scaleDownDelayAfterAdd": "5m",
-    "scaleDownUnneededTime": "5m"
   }
 }

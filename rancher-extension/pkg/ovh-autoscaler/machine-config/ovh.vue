@@ -43,9 +43,12 @@ export default {
     poolIndex: { type: Number, default: 0 }
   },
   data() {
-    // Read autoscaler state from value (machine config) if present
-    const autoscalerMin = this.value?.autoscalerMin;
-    const autoscalerMax = this.value?.autoscalerMax;
+    // Read autoscaler state from cluster machine pool annotations
+    const pool = this.cluster?.spec?.rkeConfig?.machinePools?.[this.poolIndex] || {};
+    const ann = pool.machineDeploymentAnnotations || {};
+    const autoscalerMin = ann['cluster.provisioning.cattle.io/autoscaler-min-size'];
+    const autoscalerMax = ann['cluster.provisioning.cattle.io/autoscaler-max-size'];
+    
     return {
       regions: REGIONS,
       flavors: FLAVORS,
@@ -53,8 +56,8 @@ export default {
       region: this.value?.region || 'US-EAST-VA-1',
       flavorName: this.value?.flavorName || 'b3-8',
       imageName: this.value?.imageName || 'Ubuntu 24.04',
-      // Autoscaler state - stored in value for persistence
-      enableAutoscaler: autoscalerMin !== undefined && autoscalerMin !== null,
+      // Autoscaler state - read from annotations
+      enableAutoscaler: !!autoscalerMin,
       autoscalerMin: parseInt(autoscalerMin) || 1,
       autoscalerMax: parseInt(autoscalerMax) || 10,
     };

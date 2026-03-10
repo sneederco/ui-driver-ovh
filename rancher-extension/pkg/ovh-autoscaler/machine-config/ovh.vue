@@ -6,18 +6,29 @@ const REGIONS = [
   { label: 'France (SBG5)', value: 'SBG5' },
 ];
 
+// OVH US Pricing from https://us.ovhcloud.com/public-cloud/prices/
 const FLAVORS = [
-  { label: 'b3-8 (2 vCPU, 8GB RAM)', value: 'b3-8' },
-  { label: 'b3-16 (4 vCPU, 16GB RAM)', value: 'b3-16' },
-  { label: 'b3-32 (8 vCPU, 32GB RAM)', value: 'b3-32' },
-  { label: 'b3-64 (16 vCPU, 64GB RAM)', value: 'b3-64' },
-  { label: 'b3-128 (32 vCPU, 128GB RAM)', value: 'b3-128' },
-  { label: 'c3-8 (2 vCPU, 8GB RAM)', value: 'c3-8' },
-  { label: 'c3-16 (4 vCPU, 16GB RAM)', value: 'c3-16' },
-  { label: 'c3-32 (8 vCPU, 32GB RAM)', value: 'c3-32' },
-  { label: 'r3-16 (2 vCPU, 16GB RAM)', value: 'r3-16' },
-  { label: 'r3-32 (4 vCPU, 32GB RAM)', value: 'r3-32' },
-  { label: 'r3-64 (8 vCPU, 64GB RAM)', value: 'r3-64' },
+  // General Purpose (b3)
+  { label: 'b3-8 (2 vCPU, 8GB) - $0.0508/hr', value: 'b3-8' },
+  { label: 'b3-16 (4 vCPU, 16GB) - $0.1016/hr', value: 'b3-16' },
+  { label: 'b3-32 (8 vCPU, 32GB) - $0.2033/hr', value: 'b3-32' },
+  { label: 'b3-64 (16 vCPU, 64GB) - $0.4065/hr', value: 'b3-64' },
+  { label: 'b3-128 (32 vCPU, 128GB) - $0.8131/hr', value: 'b3-128' },
+  { label: 'b3-256 (64 vCPU, 256GB) - $1.6262/hr', value: 'b3-256' },
+  // Compute Optimized (c3)
+  { label: 'c3-4 (2 vCPU, 4GB) - $0.0453/hr', value: 'c3-4' },
+  { label: 'c3-8 (4 vCPU, 8GB) - $0.0907/hr', value: 'c3-8' },
+  { label: 'c3-16 (8 vCPU, 16GB) - $0.1813/hr', value: 'c3-16' },
+  { label: 'c3-32 (16 vCPU, 32GB) - $0.3627/hr', value: 'c3-32' },
+  { label: 'c3-64 (32 vCPU, 64GB) - $0.7254/hr', value: 'c3-64' },
+  { label: 'c3-128 (64 vCPU, 128GB) - $1.4508/hr', value: 'c3-128' },
+  // Memory Optimized (r3)
+  { label: 'r3-16 (2 vCPU, 16GB) - $0.0658/hr', value: 'r3-16' },
+  { label: 'r3-32 (4 vCPU, 32GB) - $0.1315/hr', value: 'r3-32' },
+  { label: 'r3-64 (8 vCPU, 64GB) - $0.2631/hr', value: 'r3-64' },
+  { label: 'r3-128 (16 vCPU, 128GB) - $0.5261/hr', value: 'r3-128' },
+  { label: 'r3-256 (32 vCPU, 256GB) - $1.0522/hr', value: 'r3-256' },
+  { label: 'r3-512 (64 vCPU, 512GB) - $2.1045/hr', value: 'r3-512' },
 ];
 
 const IMAGES = [

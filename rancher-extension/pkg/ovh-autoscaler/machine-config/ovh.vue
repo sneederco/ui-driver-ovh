@@ -88,10 +88,10 @@ export default {
       </label>
     </div>
     <h3 style="margin-top:16px;">Cluster Autoscaler</h3>
-    <label><input type="checkbox" v-model="enableAutoscaler" :disabled="disabled || busy" /> Enable Autoscaler</label>
+    <label><input type="checkbox" v-model="enableAutoscaler" :disabled="busy" /> Enable Autoscaler</label>
     <div v-if="enableAutoscaler" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
-      <label>Min Nodes <input type="number" min="1" v-model.number="autoscalerMin" :disabled="disabled || busy" style="width:100%" /></label>
-      <label>Max Nodes <input type="number" min="1" v-model.number="autoscalerMax" :disabled="disabled || busy" style="width:100%" /></label>
+      <label>Min Nodes <input type="number" min="1" v-model.number="autoscalerMin" :disabled="busy" style="width:100%" /></label>
+      <label>Max Nodes <input type="number" min="1" v-model.number="autoscalerMax" :disabled="busy" style="width:100%" /></label>
     </div>
   </div>
 </template>

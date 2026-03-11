@@ -1,46 +1,122 @@
-# ui-driver-ovh
+# OVHcloud Node Driver for Rancher
 
-OVH node template UI companion for Rancher.
+Provision OVHcloud Public Cloud instances directly from Rancher Manager.
 
-## Install / Adoption Guide
+## Features
 
-See `docs/README.md` for the split-repo install flow using:
+- **Native Rancher Integration**: Create OVHcloud instances through the Rancher UI
+- **Security Group Support**: Attach OpenStack security groups to instances
+- **Autoscaler Ready**: Built-in support for Rancher cluster autoscaling
+- **Multiple Regions**: US (Virginia, Oregon), EU (Germany, France)
+- **Pricing Display**: Hourly rates shown in flavor selection
 
-Issue-linked docs:
-- `docs/ISSUE-2-WS4.md` — WS4 scope, command proof, and open evidence items.
-- `docs/ISSUE-4-HOSTED-MKS-FLOW.md` — hosted MKS create/delete/scale operator flow + hourly billing teardown/rollback checklist.
+## Installation
 
-- `sneederco/docker-machine-driver-ovh` (backend binary)
-- `sneederco/ui-driver-ovh` (Rancher UI companion)
+### 1. Install Node Driver
 
-The guide includes:
+In Rancher:
+1. Go to **☰ → Cluster Management → Drivers → Node Drivers**
+2. Click **Add Node Driver**
+3. Set URL: `https://github.com/sneederco/docker-machine-driver-ovh/releases/download/v1.0.7/docker-machine-driver-ovh-linux-amd64`
+4. Click **Create**
 
-- prerequisites
-- artifact URL/checksum verification workflow
-- Rancher API registration calls (backend first, UI second)
-- adoption + rollback procedures
-- branch/command consistency notes
+### 2. Install UI Extension
 
-## Included UI Assets
+In Rancher:
+1. Go to **☰ → Extensions**
+2. Click **... → Manage Extension Catalogs**
+3. Add Repository:
+   - Name: `ovh-autoscaler`
+   - URL: `https://sneederco.github.io/ui-driver-ovh/`
+   - Branch: `gh-pages`
+4. Click **Load**
+5. Find "OVHcloud" in available extensions and click **Install**
 
-- `rancher/ovh-ui-config.json` - Rancher form field definitions, required flags, API option sources, and static fallback options.
-- `rancher/ovh-create-node-schema.json` - JSON schema with required validation and field-level validation messages.
-- `samples/field-definitions.sample.json` - Sample field definition payload for UI integration.
-- `samples/validation-messages.sample.json` - Sample validation message mapping for form errors.
+### 3. Create Cloud Credential
 
-## Issue #2 Dual-Path Prototype
+1. Go to **☰ → Cluster Management → Cloud Credentials**
+2. Click **Create**
+3. Select **OVHcloud**
+4. Enter your OVH API credentials:
+   - Application Key
+   - Application Secret
+   - Consumer Key
+   - Project ID
 
-- `src/dual-path.html` + `dist/dual-path.html`
-- Covers both:
-  - Hosted OVH MKS
-  - OVH Nodes + RKE2/K3s
-- Includes required field validation and static fallback options for sprint evidence.
+## Configuration
 
-## Validation Commands
+### Security Groups (Required for RKE2/K3s)
+
+OVHcloud instances need specific security group rules for Kubernetes:
 
 ```bash
-npm run check
-npm run render:proof
+# Create security group via OpenStack CLI
+openstack security group create rancher-nodes
+
+# Add rules
+openstack security group rule create --protocol tcp --dst-port 22 rancher-nodes
+openstack security group rule create --protocol tcp --dst-port 443 rancher-nodes
+openstack security group rule create --protocol tcp --dst-port 6443 rancher-nodes
+openstack security group rule create --protocol tcp --dst-port 9345 rancher-nodes
+openstack security group rule create --protocol tcp --dst-port 10250 rancher-nodes
+openstack security group rule create --protocol tcp --dst-port 2379:2380 rancher-nodes
+openstack security group rule create --protocol udp --dst-port 8472 rancher-nodes
 ```
 
-`npm run check` runs lint/build/validation and emits deployable files under `dist/`.
+When creating clusters, specify `rancher-nodes` in the Security Group field and provide OpenStack credentials for attachment.
+
+### Autoscaler Configuration
+
+The UI extension sets up **Rancher-native autoscaler** annotations automatically:
+
+1. Create cluster with machine pool
+2. Check "Enable Autoscaler" in the OVH machine config
+3. Set Min/Max nodes
+4. Rancher handles autoscaling automatically
+
+No separate cluster-autoscaler deployment needed!
+
+## Architecture
+
+This driver uses the **Node Driver** architecture (not CAPI):
+
+- ✅ Familiar Rancher UX
+- ✅ No CAPI knowledge required
+- ✅ Native Rancher autoscaler support
+- ✅ Simpler deployment model
+
+## Pricing
+
+OVHcloud pricing (April 2026):
+
+| Flavor | vCPU | RAM | Hourly |
+|--------|------|-----|--------|
+| b3-8 | 2 | 8GB | $0.0605 |
+| b3-16 | 4 | 16GB | $0.1208 |
+| c3-4 | 2 | 4GB | $0.054 |
+| c3-8 | 4 | 8GB | $0.1078 |
+| r3-16 | 2 | 16GB | $0.0783 |
+
+## Troubleshooting
+
+### Security Group Not Attaching
+
+Ensure you provide OpenStack credentials along with OVH credentials:
+- OpenStack Auth URL (e.g., `https://auth.cloud.ovh.us/v3`)
+- OpenStack Username
+- OpenStack Password
+
+### Driver Not Loading
+
+Check Rancher logs for download errors:
+```bash
+kubectl logs -n cattle-system deployment/rancher | grep ovh
+```
+
+## License
+
+MIT
+
+## Contributing
+
+Contributions welcome! See [docker-machine-driver-ovh](https://github.com/sneederco/docker-machine-driver-ovh) for driver issues.

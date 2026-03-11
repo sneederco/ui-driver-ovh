@@ -57,8 +57,11 @@ export default {
     // Read autoscaler state from cluster machine pool annotations
     const pool = this.cluster?.spec?.rkeConfig?.machinePools?.[this.poolIndex] || {};
     const ann = pool.machineDeploymentAnnotations || {};
-    const autoscalerMin = ann['cluster.provisioning.cattle.io/autoscaler-min-size'];
-    const autoscalerMax = ann['cluster.provisioning.cattle.io/autoscaler-max-size'];
+    // Check both Rancher and CAPI autoscaler annotations
+    const autoscalerMin = ann['cluster.provisioning.cattle.io/autoscaler-min-size'] || 
+                          ann['cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size'];
+    const autoscalerMax = ann['cluster.provisioning.cattle.io/autoscaler-max-size'] || 
+                          ann['cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size'];
     
     return {
       regions: REGIONS,
@@ -97,11 +100,17 @@ export default {
       if (!pool) return;
       if (!pool.machineDeploymentAnnotations) pool.machineDeploymentAnnotations = {};
       if (this.enableAutoscaler) {
+        // Rancher annotations
         pool.machineDeploymentAnnotations['cluster.provisioning.cattle.io/autoscaler-min-size'] = String(this.autoscalerMin);
         pool.machineDeploymentAnnotations['cluster.provisioning.cattle.io/autoscaler-max-size'] = String(this.autoscalerMax);
+        // CAPI cluster-autoscaler standard annotations (required for CAPI autoscaler)
+        pool.machineDeploymentAnnotations['cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size'] = String(this.autoscalerMin);
+        pool.machineDeploymentAnnotations['cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size'] = String(this.autoscalerMax);
       } else {
         delete pool.machineDeploymentAnnotations['cluster.provisioning.cattle.io/autoscaler-min-size'];
         delete pool.machineDeploymentAnnotations['cluster.provisioning.cattle.io/autoscaler-max-size'];
+        delete pool.machineDeploymentAnnotations['cluster.x-k8s.io/cluster-api-autoscaler-node-group-min-size'];
+        delete pool.machineDeploymentAnnotations['cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size'];
       }
       this.$emit('validationChanged', true);
     },

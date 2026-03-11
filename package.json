@@ -1,0 +1,15 @@
+{
+  "name": "ovh-autoscaler",
+  "description": "OVHcloud Node Driver UI for Rancher with Autoscaler support",
+  "version": "1.0.1",
+  "private": false,
+  "rancher": {
+    "annotations": {
+      "catalog.cattle.io/display-name": "OVHcloud",
+      "catalog.cattle.io/category": "Infrastructure Provider"
+    }
+  },
+  "scripts": {},
+  "devDependencies": {},
+  "dependencies": {}
+}

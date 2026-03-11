@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[8534],{8534(e,r,n){n.r(r),n.d(r,{default:()=>u});var t=n(20641);function o(e,r,n,o,a,i){const s=(0,t.g2)("ResourceDetail");return(0,t.uX)(),(0,t.Wv)(s,{"resource-override":"kontainerDriver","parent-route-override":"c-cluster-manager-driver-kontainerdriver"})}var a=n(50630);const i={name:"KontainerDriverCreate",components:{ResourceDetail:a.A}};var s=n(66262);const c=(0,s.A)(i,[["render",o]]),u=c}}]);
+//# sourceMappingURL=8534.24fb860f.js.map

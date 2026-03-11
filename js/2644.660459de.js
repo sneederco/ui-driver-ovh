@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[2644],{52644(e,t,n){n.r(t),n.d(t,{default:()=>i});var r=n(20641);function s(e,t,n,s,o,c){const a=(0,r.g2)("ResourceDetail");return(0,r.uX)(),(0,r.Wv)(a,{"component-testid":"cluster-manager-create"})}var o=n(50630);const c={name:"ClusterResourceCreate",components:{ResourceDetail:o.A}};var a=n(66262);const u=(0,a.A)(c,[["render",s]]),i=u}}]);
+//# sourceMappingURL=2644.660459de.js.map

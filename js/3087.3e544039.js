@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[3087],{23087(e,t,s){s.r(t),s.d(t,{default:()=>a});var c=s(47441);const r={fetch({store:e,redirect:t}){const s=e.getters["defaultClusterId"];t(s?{name:"c-cluster",params:{cluster:s}}:{name:"c-cluster-product",params:{cluster:"local",product:c.NAME}})}},u=r,a=u}}]);
+//# sourceMappingURL=3087.3e544039.js.map

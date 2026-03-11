@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[5748],{55748(e,r,n){n.r(r),n.d(r,{default:()=>i});var o=n(20641);function t(e,r,n,t,s,a){const c=(0,o.g2)("ResourceDetail");return(0,o.uX)(),(0,o.Wv)(c,{"resource-override":"nodeDriver","parent-route-override":"c-cluster-manager-driver-nodedriver"})}var s=n(50630);const a={name:"NodeDriverCreate",components:{ResourceDetail:s.A}};var c=n(66262);const u=(0,c.A)(a,[["render",t]]),i=u}}]);
+//# sourceMappingURL=5748.b60ee879.js.map

@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[9072],{79072(e,t,n){n.r(t),n.d(t,{default:()=>u});var o=n(20641);function r(e,t,n,r,a,c){const s=(0,o.g2)("ResourceDetail");return(0,o.uX)(),(0,o.Wv)(s,{"parent-route-override":"c-cluster-fleet-application"})}var a=n(50630);const c={name:"FleetApplicationViewEditPage",components:{ResourceDetail:a.A}};var s=n(66262);const i=(0,s.A)(c,[["render",r]]),u=i}}]);
+//# sourceMappingURL=9072.7d1e7f84.js.map

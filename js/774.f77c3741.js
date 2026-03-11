@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[774],{90774(e,r,n){n.r(r),n.d(r,{default:()=>i});var o=n(20641);function s(e,r,n,s,t,c){const u=(0,o.g2)("ResourceDetail");return(0,o.uX)(),(0,o.Wv)(u,{"resource-override":"nodeDriver"})}var t=n(50630);const c={name:"NodeDriverEditPage",components:{ResourceDetail:t.A}};var u=n(66262);const a=(0,u.A)(c,[["render",s]]),i=a}}]);
+//# sourceMappingURL=774.f77c3741.js.map

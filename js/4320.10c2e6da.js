@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[4320],{34320(e,n,t){t.r(n),t.d(n,{default:()=>i});var o=t(20641);function r(e,n,t,r,s,a){const c=(0,o.g2)("ResourceDetail");return(0,o.uX)(),(0,o.Wv)(c)}var s=t(50630);const a={name:"AlertmanagerConfig",components:{ResourceDetail:s.A}};var c=t(66262);const u=(0,c.A)(a,[["render",r]]),i=u}}]);
+//# sourceMappingURL=4320.10c2e6da.js.map

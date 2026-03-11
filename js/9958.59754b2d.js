@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[9958],{39958(e,r,n){n.r(r),n.d(r,{default:()=>d});var t=n(20641);function o(e,r,n,o,c,u){const a=(0,t.g2)("ResourceDetail");return(0,t.uX)(),(0,t.Wv)(a,{"resource-override":"cloudcredential","parent-route-override":"c-cluster-manager-cloudCredential"})}var c=n(50630);const u={name:"CloudCredentialEdit",components:{ResourceDetail:c.A}};var a=n(66262);const s=(0,a.A)(u,[["render",o]]),d=s}}]);
+//# sourceMappingURL=9958.59754b2d.js.map

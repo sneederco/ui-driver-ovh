@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[4594],{12213(e,r,o){o.r(r),o.d(r,{default:()=>i});var u=o(20641);function s(e,r,o,s,t,n){const c=(0,u.g2)("ResourceDetail");return(0,u.uX)(),(0,u.Wv)(c,{"resource-override":t.resource},null,8,["resource-override"])}var t=o(50630);const n={name:"RouteReceiverCreate",components:{ResourceDetail:t.A},data(){return{resource:null}},created(){this.resource=this.$route.query.resource}};var c=o(66262);const a=(0,c.A)(n,[["render",s]]),i=a}}]);
+//# sourceMappingURL=4594.5fbd8987.js.map

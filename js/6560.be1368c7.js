@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[6560],{26560(e,r,t){t.r(r),t.d(r,{default:()=>u});var s=t(853),c=t(55823);const o={beforeCreate(){const e=!!this.$store.getters["management/schemaFor"](c.Mc.SETTING);return this.$router.replace({name:"c-cluster-product-resource",params:{...this.$route.params,product:s.NAME,resource:e?c.Mc.SETTING:c.Mc.FEATURE}})}},a=o,u=a}}]);
+//# sourceMappingURL=6560.be1368c7.js.map

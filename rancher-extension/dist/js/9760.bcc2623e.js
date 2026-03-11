@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[9760],{89760(e,r,n){n.r(r),n.d(r,{default:()=>u});var o=n(20641);function t(e,r,n,t,s,a){const i=(0,o.g2)("ResourceDetail");return(0,o.uX)(),(0,o.Wv)(i,{"resource-override":"kontainerDriver"})}var s=n(50630);const a={name:"KontainerDriverEditPage",components:{ResourceDetail:s.A}};var i=n(66262);const c=(0,i.A)(a,[["render",t]]),u=c}}]);
+//# sourceMappingURL=9760.bcc2623e.js.map

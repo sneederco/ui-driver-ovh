@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkovh_extension"]=self["webpackChunkovh_extension"]||[]).push([[435],{44949(e,a,n){async function t(e){let a;const n={headers:{accept:"application/yaml"}};return e.hasLink("view")&&(a=(await e.followLink("view",n)).data),e.cleanForDownload(a)}n.r(a),n.d(a,{getYaml:()=>t})}}]);
+//# sourceMappingURL=drawer18.10f8397d.js.map
